@@ -1,0 +1,3436 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>پرتال مجتمع مسکونی</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --navy-950: #05091a;
+        --navy-900: #0a1128;
+        --navy-800: #0f1d42;
+        --navy-700: #162355;
+        --navy-600: #1e2f6e;
+        --navy-500: #253a8a;
+        --navy-400: #3a54c4;
+        --accent: #4e9eff;
+        --accent-glow: #4e9eff44;
+        --gold: #f0c060;
+        --surface: #0d1635cc;
+        --surface-light: #162050cc;
+        --border: #2a3d7a55;
+        --border-bright: #4e9eff33;
+        --text-primary: #e8eeff;
+        --text-secondary: #8fa4d4;
+        --text-muted: #eaeefa;
+        /* --text-muted: #4a5f9a; */
+        --success: #34d399;
+        --warning: #fbbf24;
+        --danger: #f87171;
+        --radius: 14px;
+        --radius-sm: 9px;
+
+        /* ... بقیه متغیرها دست‌نخورده بماند ... */
+        --surface: rgba(13, 22, 53, 0.6); /* کاهش غلظت رنگ پایه به ۴۰ درصد */
+        --surface-light: rgba(22, 32, 80, 0.3);
+        --border-bright: rgba(
+          78,
+          158,
+          255,
+          0.6
+        ); /* روشن‌تر کردن مرزها برای حس شیشه‌ای */
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      /* اعمال افکت شیشه‌ای مات روی تمام دایوها و کارت‌های اصلی برنامه */
+      .login-card,
+      .col-card,
+      .charge-card,
+      .admin-card,
+      .send-msg-card,
+      .booking-form {
+        background: var(--surface) !important;
+        backdrop-filter: blur(16px) !important;
+        -webkit-backdrop-filter: blur(
+          16px
+        ) !important; /* سازگاری با آیفون و سافاری */
+        border: 1px solid var(--border-bright) !important;
+      }
+
+      /* اعمال افکت شیشه‌ای روی خودِ پنجره پاپ‌آپ مودال */
+      .modal {
+        background: rgba(10, 17, 40, 0.55) !important;
+        backdrop-filter: blur(25px) !important;
+        -webkit-backdrop-filter: blur(25px) !important;
+        border: 1px solid rgba(78, 158, 255, 0.5) !important;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7) !important;
+      }
+
+      /* نیمه شفاف کردن لایه تاریک پشت مودال برای دیدن زیبایی افکت شیشه */
+      .modal-overlay {
+        background: rgba(0, 0, 0, 0.3) !important;
+        backdrop-filter: blur(
+          4px
+        ); /* مات شدن خفیف کل صفحه هنگام باز شدن مودال */
+      }
+
+      /* شیشه‌ای کردن نوار بالا و پایین وب‌سایت */
+      .topnav,
+      .bottom-tabs {
+        background: rgba(13, 22, 53, 0.6) !important;
+        backdrop-filter: blur(20px) !important;
+        -webkit-backdrop-filter: blur(20px) !important;
+      }
+      body {
+        font-family: "Vazirmatn", sans-serif;
+        background: var(--navy-950);
+        color: var(--text-primary);
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+
+      /* Background */
+      .bg-photo {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+
+        background: url("./pics/6.jpg") center/cover no-repeat;
+      }
+      .bg-overlay {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+      }
+
+      /* Screens */
+      .screen {
+        display: none;
+        position: relative;
+        z-index: 1;
+        min-height: 100vh;
+      }
+      .screen.active {
+        display: flex;
+      }
+
+      /* ─── LOGIN ─── */
+      #screen-login {
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+        animation: fadeIn 0.5s ease;
+      }
+      .login-card {
+        background: var(--surface);
+        border: 1px solid var(--border-bright);
+        border-radius: 22px;
+        padding: 44px 36px;
+        width: 100%;
+        max-width: 420px;
+        backdrop-filter: blur(24px);
+        box-shadow:
+          0 0 80px #4e9eff0d,
+          0 24px 80px #00000088;
+        animation: slideUp 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+      }
+      .login-logo {
+        text-align: center;
+        margin-bottom: 28px;
+      }
+      .login-logo .icon {
+        width: 70px;
+        height: 70px;
+        margin: 0 auto 14px;
+        background: linear-gradient(135deg, var(--navy-600), var(--navy-400));
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 30px;
+        box-shadow: 0 0 30px var(--accent-glow);
+        border: 1px solid var(--border-bright);
+      }
+      .login-logo h1 {
+        font-size: 21px;
+        font-weight: 700;
+      }
+      .login-logo p {
+        font-size: 12px;
+        color: var(--text-secondary);
+        margin-top: 4px;
+      }
+      .login-admin-btn {
+        display: block;
+        margin: 0 auto 22px;
+        background: transparent;
+        border: 1px solid var(--border);
+        color: var(--text-muted);
+        border-radius: 20px;
+        padding: 5px 16px;
+        font-size: 12px;
+        cursor: pointer;
+        font-family: "Vazirmatn", sans-serif;
+        transition: all 0.2s;
+      }
+      .login-admin-btn:hover {
+        border-color: var(--gold);
+        color: var(--gold);
+      }
+      .form-group {
+        margin-bottom: 16px;
+      }
+      .form-group label {
+        display: block;
+        font-size: 12px;
+        font-weight: 500;
+        color: var(--text-secondary);
+        margin-bottom: 7px;
+      }
+      .form-group input,
+      .form-group select,
+      .form-group textarea {
+        width: 100%;
+        padding: 12px 14px;
+        background: var(--navy-800);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        color: var(--text-primary);
+        font-family: "Vazirmatn", sans-serif;
+        font-size: 14px;
+        transition: all 0.2s;
+        outline: none;
+        resize: vertical;
+      }
+      .form-group input:focus,
+      .form-group select:focus,
+      .form-group textarea:focus {
+        border-color: var(--accent);
+        box-shadow: 0 0 0 3px var(--accent-glow);
+        background: var(--navy-700);
+      }
+      .form-group input::placeholder,
+      .form-group textarea::placeholder {
+        color: var(--text-muted);
+      }
+      .row-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+      .btn {
+        width: 100%;
+        padding: 13px;
+        background: linear-gradient(135deg, var(--navy-500), var(--navy-400));
+        border: none;
+        border-radius: var(--radius-sm);
+        color: white;
+        font-family: "Vazirmatn", sans-serif;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s;
+        box-shadow: 0 4px 20px var(--accent-glow);
+      }
+      .btn:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 6px 30px var(--accent-glow);
+      }
+      .btn:active {
+        transform: translateY(0);
+      }
+      .login-error {
+        background: #f8717120;
+        border: 1px solid #f8717144;
+        color: #f87171;
+        border-radius: var(--radius-sm);
+        padding: 10px 14px;
+        font-size: 12px;
+        margin-bottom: 14px;
+        display: none;
+      }
+
+      /* ─── TOP NAV ─── */
+      .topnav {
+        background: var(--surface);
+        border-bottom: 1px solid var(--border);
+        backdrop-filter: blur(20px);
+        padding: 0 20px;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+      .topnav-brand {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .topnav-brand .logo {
+        font-size: 20px;
+      }
+      .topnav-brand span {
+        font-size: 15px;
+        font-weight: 700;
+        color: var(--text-primary);
+      }
+      .topnav-center {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        text-align: center;
+        pointer-events: none;
+      }
+      .topnav-center .user-name {
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--text-primary);
+      }
+      .topnav-center .user-unit {
+        font-size: 11px;
+        color: var(--text-secondary);
+      }
+      .topnav-right {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .clock-box {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 12px;
+        color: var(--text-secondary);
+        text-align: left;
+        line-height: 1.5;
+      }
+      .clock-box .time {
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--accent);
+        font-variant-numeric: tabular-nums;
+      }
+      .btn-logout {
+        background: transparent;
+        border: 1px solid var(--border);
+        color: var(--text-muted);
+        border-radius: var(--radius-sm);
+        padding: 6px 12px;
+        font-size: 12px;
+        cursor: pointer;
+        font-family: "Vazirmatn", sans-serif;
+        transition: all 0.2s;
+      }
+      .btn-logout:hover {
+        border-color: var(--danger);
+        color: var(--danger);
+      }
+
+      /* ─── APP LAYOUT ─── */
+      #screen-app {
+        flex-direction: column;
+        animation: fadeIn 0.4s ease;
+      }
+      .app-content {
+        flex: 1;
+        padding: 16px 16px 90px;
+        max-width: 1100px;
+        margin: 0 auto;
+        width: 100%;
+      }
+
+      /* Bottom Tabs */
+      .bottom-tabs {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        z-index: 100;
+        background: var(--surface);
+        border-top: 1px solid var(--border);
+        backdrop-filter: blur(20px);
+        display: flex;
+      }
+      .tab-btn {
+        flex: 1;
+        padding: 9px 4px;
+        background: none;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 3px;
+        color: var(--text-muted);
+        transition: all 0.2s;
+        font-family: "Vazirmatn", sans-serif;
+        position: relative;
+      }
+      .tab-btn .tab-icon {
+        font-size: 18px;
+      }
+      .tab-btn .tab-label {
+        font-size: 10px;
+        font-weight: 500;
+      }
+      .tab-btn.active {
+        color: var(--accent);
+      }
+      .tab-btn .badge {
+        position: absolute;
+        top: 6px;
+        right: calc(50% - 14px);
+        background: var(--danger);
+        color: white;
+        font-size: 9px;
+        font-weight: 700;
+        border-radius: 10px;
+        padding: 1px 5px;
+        min-width: 16px;
+        text-align: center;
+      }
+
+      /* Tab contents */
+      .tab-content {
+        display: none;
+        animation: fadeIn 0.3s ease;
+      }
+      .tab-content.active {
+        display: block;
+      }
+
+      /* Section title */
+      .section-title {
+        font-size: 18px;
+        font-weight: 700;
+        color: var(--text-primary);
+        margin-bottom: 4px;
+      }
+      .section-sub {
+        font-size: 12px;
+        color: var(--text-secondary);
+        margin-bottom: 18px;
+      }
+
+      /* ─── HOME 3-COLUMN LAYOUT ─── */
+      .home-grid {
+        display: grid;
+        grid-template-columns: 1fr 2fr 1fr;
+        gap: 14px;
+        align-items: start;
+      }
+      @media (max-width: 768px) {
+        .home-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      /* ─── ARROW ICONS FOR INBOX / SENT HEADERS ─── */
+      .arrow-in {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 22px;
+        height: 22px;
+        flex-shrink: 0;
+      }
+      .arrow-out {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 22px;
+        height: 22px;
+        flex-shrink: 0;
+      }
+
+      /* ─── SCROLL CONTAINERS FOR HOME SECTIONS ─── */
+      /* اطلاعیه‌ها: بعد از 5 مورد اسکرول */
+      #home-ann-list {
+        max-height: none;
+        overflow-y: visible;
+        transition: max-height 0.3s ease;
+      }
+      #home-ann-list.scrollable {
+        max-height: 420px;
+        overflow-y: auto;
+      }
+      /* پیام دریافتی: بعد از 3 مورد اسکرول */
+      #home-inbox-list {
+        max-height: none;
+        overflow-y: visible;
+        transition: max-height 0.3s ease;
+      }
+      #home-inbox-list.scrollable {
+        max-height: 260px;
+        overflow-y: auto;
+      }
+      /* پیام ارسالی: بعد از 3 مورد اسکرول */
+      #home-sent-list {
+        max-height: none;
+        overflow-y: visible;
+        transition: max-height 0.3s ease;
+      }
+      #home-sent-list.scrollable {
+        max-height: 260px;
+        overflow-y: auto;
+      }
+      /* scrollbar یکپارچه برای همه */
+      #home-ann-list::-webkit-scrollbar,
+      #home-inbox-list::-webkit-scrollbar,
+      #home-sent-list::-webkit-scrollbar {
+        width: 4px;
+      }
+      #home-ann-list::-webkit-scrollbar-track,
+      #home-inbox-list::-webkit-scrollbar-track,
+      #home-sent-list::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      #home-ann-list::-webkit-scrollbar-thumb,
+      #home-inbox-list::-webkit-scrollbar-thumb,
+      #home-sent-list::-webkit-scrollbar-thumb {
+        background: var(--border);
+        border-radius: 4px;
+      }
+
+      /* Column cards */
+      .col-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        overflow: hidden;
+        backdrop-filter: blur(12px);
+      }
+      .col-card-header {
+        padding: 12px 16px;
+        border-bottom: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        justify-content: space-between;
+      }
+      .col-card-header h3 {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text-primary);
+      }
+      .col-card-header .hicon {
+        font-size: 16px;
+      }
+      .col-card-body {
+        padding: 12px;
+        max-height: 420px;
+        overflow-y: auto;
+      }
+      .col-card-body::-webkit-scrollbar {
+        width: 4px;
+      }
+      .col-card-body::-webkit-scrollbar-track {
+        background: transparent;
+      }
+      .col-card-body::-webkit-scrollbar-thumb {
+        background: var(--border);
+        border-radius: 4px;
+      }
+
+      /* Booking mini items */
+      .bk-mini {
+        background: var(--navy-800);
+        border-radius: var(--radius-sm);
+        padding: 10px 12px;
+        margin-bottom: 8px;
+        border: 1px solid var(--border);
+      }
+      .bk-mini h4 {
+        font-size: 12px;
+        font-weight: 600;
+      }
+      .bk-mini p {
+        font-size: 11px;
+        color: var(--text-secondary);
+        margin-top: 2px;
+      }
+      .bk-mini .bk-status {
+        font-size: 10px;
+        margin-top: 5px;
+      }
+      .bk-mini .bk-status.confirmed {
+        color: var(--success);
+      }
+
+      /* Announcements center */
+      .ann-item {
+        background: var(--navy-800);
+        border-radius: var(--radius-sm);
+        padding: 14px;
+        margin-bottom: 10px;
+        border-right: 3px solid var(--accent);
+        position: relative;
+      }
+      .ann-item.warn {
+        border-right-color: var(--warning);
+      }
+      .ann-item.danger {
+        border-right-color: var(--danger);
+      }
+      .ann-item.info {
+        border-right-color: var(--accent);
+      }
+      .ann-item.success {
+        border-right-color: var(--success);
+      }
+      .ann-item-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 8px;
+      }
+      .ann-item-title {
+        font-size: 13px;
+        font-weight: 600;
+        flex: 1;
+      }
+      .ann-item-body {
+        font-size: 12px;
+        color: var(--text-secondary);
+        margin-top: 6px;
+        line-height: 1.7;
+      }
+      .ann-item-footer {
+        margin-top: 8px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .ann-date {
+        font-size: 10px;
+        color: var(--text-muted);
+      }
+      .ann-badge {
+        font-size: 10px;
+        padding: 2px 8px;
+        border-radius: 10px;
+        background: var(--navy-700);
+        color: var(--text-secondary);
+      }
+      .ann-badge.new {
+        background: #4e9eff22;
+        color: var(--accent);
+        border: 1px solid var(--accent-glow);
+      }
+      .btn-del-ann {
+        background: #7a1e1e55;
+        border: 1px solid #f8717144;
+        color: var(--danger);
+        cursor: pointer;
+        font-size: 13px;
+        padding: 3px 9px;
+        border-radius: 7px;
+        transition: all 0.15s;
+        font-family: "Vazirmatn", sans-serif;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+      }
+      .btn-del-ann:hover {
+        background: #f8717133;
+        border-color: var(--danger);
+        box-shadow: 0 0 10px #f8717133;
+      }
+
+      /* Messages (inbox) right column */
+      .msg-item {
+        background: var(--navy-800);
+        border-radius: var(--radius-sm);
+        padding: 10px 12px;
+        margin-bottom: 8px;
+        border: 1px solid var(--border);
+        cursor: pointer;
+        transition: all 0.15s;
+      }
+      .msg-item:hover {
+        border-color: var(--border-bright);
+      }
+      .msg-item.unread {
+        border-right: 3px solid var(--accent);
+      }
+      .msg-item-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .msg-type-badge {
+        font-size: 10px;
+        padding: 2px 7px;
+        border-radius: 8px;
+        font-weight: 600;
+      }
+      .msg-type-badge.هشدار {
+        background: #f8717122;
+        color: var(--danger);
+      }
+      .msg-type-badge.شکایت {
+        background: #fbbf2422;
+        color: var(--warning);
+      }
+      .msg-type-badge.قدردانی {
+        background: #34d39922;
+        color: var(--success);
+      }
+      .msg-type-badge.اطلاع-رسانی {
+        background: #4e9eff22;
+        color: var(--accent);
+      }
+      .msg-type-badge.پیشنهاد {
+        background: #a78bfa22;
+        color: #a78bfa;
+      }
+      .msg-ref {
+        font-size: 10px;
+        color: var(--text-muted);
+      }
+      .msg-title {
+        font-size: 12px;
+        font-weight: 600;
+        margin-top: 4px;
+      }
+      .msg-preview {
+        font-size: 11px;
+        color: var(--text-secondary);
+        margin-top: 2px;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .msg-date {
+        font-size: 10px;
+        color: var(--text-muted);
+        margin-top: 4px;
+      }
+
+      /* ─── BOOKING TAB ─── */
+      .facility-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 12px;
+        margin-bottom: 20px;
+      }
+      .facility-card {
+        background: var(--surface);
+        border: 2px solid var(--border);
+        border-radius: var(--radius);
+        padding: 18px 14px;
+        cursor: pointer;
+        transition: all 0.25s;
+        text-align: center;
+      }
+      .facility-card:hover,
+      .facility-card.selected {
+        border-color: var(--accent);
+        background: #4e9eff0a;
+        box-shadow: 0 0 20px var(--accent-glow);
+      }
+      .facility-card .fac-icon {
+        font-size: 32px;
+        margin-bottom: 6px;
+      }
+      .facility-card .fac-name {
+        font-size: 13px;
+        font-weight: 600;
+      }
+      .facility-card .fac-cap {
+        font-size: 11px;
+        color: var(--text-secondary);
+        margin-top: 3px;
+      }
+      .booking-form {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 20px;
+        display: none;
+      }
+      .booking-form.show {
+        display: block;
+        animation: slideUp 0.3s ease;
+      }
+      .booking-form h3 {
+        font-size: 15px;
+        font-weight: 600;
+        margin-bottom: 16px;
+      }
+      .time-slots {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 7px;
+        margin-bottom: 16px;
+      }
+      .slot {
+        padding: 8px 4px;
+        text-align: center;
+        border-radius: 8px;
+        font-size: 12px;
+        font-weight: 500;
+        cursor: pointer;
+        border: 1px solid var(--border);
+        transition: all 0.15s;
+        background: var(--navy-800);
+      }
+      .slot:hover:not(.booked) {
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+      .slot.selected {
+        background: var(--navy-500);
+        border-color: var(--accent);
+        color: white;
+      }
+      .slot.booked {
+        background: var(--navy-900);
+        color: var(--text-muted);
+        cursor: not-allowed;
+        text-decoration: line-through;
+        opacity: 0.5;
+      }
+      .btn-book {
+        background: linear-gradient(135deg, #1e7a4a, #28a866);
+        box-shadow: 0 4px 20px #28a86640;
+      }
+
+      /* ─── BOOKINGS LIST ─── */
+      .booking-item {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 14px 16px;
+        margin-bottom: 9px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        animation: slideUp 0.3s ease;
+      }
+      .booking-item .bi-info h4 {
+        font-size: 13px;
+        font-weight: 600;
+      }
+      .booking-item .bi-info p {
+        font-size: 11px;
+        color: var(--text-secondary);
+        margin-top: 2px;
+      }
+      .bi-badge {
+        font-size: 10px;
+        padding: 3px 9px;
+        border-radius: 20px;
+        font-weight: 600;
+      }
+      .bi-badge.confirmed {
+        background: #34d39922;
+        color: var(--success);
+        border: 1px solid #34d39944;
+      }
+      .btn-cancel {
+        background: transparent;
+        border: 1px solid var(--border);
+        color: var(--text-muted);
+        border-radius: 7px;
+        padding: 4px 10px;
+        font-size: 11px;
+        cursor: pointer;
+        font-family: "Vazirmatn", sans-serif;
+        margin-top: 5px;
+        transition: all 0.2s;
+      }
+      .btn-cancel:hover {
+        border-color: var(--danger);
+        color: var(--danger);
+      }
+
+      /* ─── CHARGES ─── */
+      .charge-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 20px;
+        margin-bottom: 16px;
+      }
+      .charge-card h3 {
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 7px;
+      }
+      .upload-zone {
+        border: 2px dashed var(--border);
+        border-radius: var(--radius-sm);
+        padding: 28px 20px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .upload-zone:hover,
+      .upload-zone.dragover {
+        border-color: var(--accent);
+        background: var(--accent-glow);
+      }
+      .upload-zone .up-icon {
+        font-size: 36px;
+        margin-bottom: 8px;
+      }
+      .upload-zone p {
+        font-size: 13px;
+        color: var(--text-secondary);
+      }
+      .upload-zone span {
+        font-size: 11px;
+        color: var(--text-muted);
+        margin-top: 3px;
+        display: block;
+      }
+      #file-input {
+        display: none;
+      }
+      .file-preview {
+        background: var(--navy-800);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 11px 14px;
+        margin-top: 12px;
+        display: none;
+        align-items: center;
+        gap: 9px;
+      }
+      .file-preview.show {
+        display: flex;
+      }
+      .charge-row {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 12px 0;
+        border-bottom: 1px solid var(--border);
+      }
+      .charge-row:last-child {
+        border-bottom: none;
+      }
+      .cr-month {
+        font-size: 13px;
+        font-weight: 500;
+      }
+      .cr-amount {
+        font-size: 12px;
+        color: var(--text-secondary);
+      }
+      .cr-status {
+        font-size: 11px;
+        padding: 2px 9px;
+        border-radius: 20px;
+      }
+      .cr-status.paid {
+        background: #34d39920;
+        color: var(--success);
+      }
+      .cr-status.pending {
+        background: #fbbf2420;
+        color: var(--warning);
+      }
+
+      /* ─── MESSAGES TAB ─── */
+      .msg-full-item {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 18px;
+        margin-bottom: 12px;
+        transition: all 0.2s;
+      }
+      .msg-full-item.unread {
+        border-right: 3px solid var(--accent);
+      }
+      .msg-full-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 10px;
+      }
+      .msg-full-title {
+        font-size: 15px;
+        font-weight: 700;
+      }
+      .msg-full-body {
+        font-size: 13px;
+        color: var(--text-secondary);
+        line-height: 1.8;
+      }
+      .msg-full-meta {
+        margin-top: 12px;
+        display: flex;
+        gap: 12px;
+        flex-wrap: wrap;
+      }
+      .msg-meta-item {
+        font-size: 11px;
+        color: var(--text-muted);
+        background: var(--navy-800);
+        padding: 3px 10px;
+        border-radius: 10px;
+      }
+      .msg-ref-link {
+        color: var(--accent);
+        cursor: pointer;
+        text-decoration: underline;
+      }
+      .reply-btn {
+        margin-top: 12px;
+        background: transparent;
+        border: 1px solid var(--border);
+        color: var(--text-secondary);
+        border-radius: var(--radius-sm);
+        padding: 7px 14px;
+        font-size: 12px;
+        cursor: pointer;
+        font-family: "Vazirmatn", sans-serif;
+        transition: all 0.2s;
+      }
+      .reply-btn:hover {
+        border-color: var(--accent);
+        color: var(--accent);
+      }
+
+      /* Send message form */
+      .send-msg-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 20px;
+        margin-bottom: 20px;
+      }
+      .send-msg-card h3 {
+        font-size: 15px;
+        font-weight: 600;
+        margin-bottom: 16px;
+      }
+
+      /* ─── ADMIN PANEL ─── */
+      .admin-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+      }
+      @media (max-width: 600px) {
+        .admin-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+      .admin-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius);
+        padding: 20px;
+      }
+      .admin-card h3 {
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 16px;
+        display: flex;
+        align-items: center;
+        gap: 7px;
+        color: var(--gold);
+      }
+      .admin-msg-item {
+        background: var(--navy-800);
+        border-radius: var(--radius-sm);
+        padding: 10px 12px;
+        margin-bottom: 8px;
+        border: 1px solid var(--border);
+      }
+      .admin-msg-item .ami-top {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .admin-msg-item .ami-title {
+        font-size: 12px;
+        font-weight: 600;
+      }
+      .admin-msg-item .ami-meta {
+        font-size: 10px;
+        color: var(--text-muted);
+        margin-top: 3px;
+      }
+      .btn-sm {
+        padding: 6px 14px;
+        border-radius: var(--radius-sm);
+        font-size: 12px;
+        font-weight: 600;
+        cursor: pointer;
+        border: none;
+        font-family: "Vazirmatn", sans-serif;
+        transition: all 0.2s;
+      }
+      .btn-confirm {
+        background: linear-gradient(135deg, #1e7a4a, #28a866);
+        color: white;
+      }
+      .btn-cancel-modal {
+        background: var(--navy-700);
+        color: var(--text-secondary);
+        border: 1px solid var(--border) !important;
+      }
+      .modal-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 20px;
+        justify-content: flex-end;
+      }
+      .btn-danger {
+        background: #7a1e1e;
+        color: var(--danger);
+        border: 1px solid #f8717144 !important;
+      }
+
+      /* Tags input */
+      .tag-list {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-bottom: 8px;
+      }
+      .tag-chip {
+        background: var(--navy-600);
+        border-radius: 20px;
+        padding: 3px 10px;
+        font-size: 11px;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+      }
+      .tag-chip button {
+        background: none;
+        border: none;
+        color: var(--text-muted);
+        cursor: pointer;
+        font-size: 12px;
+        padding: 0 2px;
+      }
+      .units-select {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 12px;
+      }
+      .unit-chip {
+        background: var(--navy-800);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 4px 12px;
+        font-size: 12px;
+        cursor: pointer;
+        transition: all 0.15s;
+      }
+      .unit-chip.selected {
+        background: var(--navy-500);
+        border-color: var(--accent);
+        color: white;
+      }
+      .unit-chip.all {
+        border-color: var(--gold);
+        color: var(--gold);
+      }
+      .unit-chip.all.selected {
+        background: #3a2200;
+      }
+
+      /* Animations */
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateY(16px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* Toast */
+      .toast {
+        position: fixed;
+        bottom: 88px;
+        left: 50%;
+        transform: translateX(-50%) translateY(16px);
+        background: var(--navy-700);
+        border: 1px solid var(--border-bright);
+        color: var(--text-primary);
+        padding: 11px 20px;
+        border-radius: 28px;
+        font-size: 13px;
+        z-index: 999;
+        opacity: 0;
+        transition: all 0.3s;
+        white-space: nowrap;
+        box-shadow: 0 8px 30px #00000066;
+      }
+      .toast.show {
+        opacity: 1;
+        transform: translateX(-50%) translateY(0);
+      }
+      .toast.success {
+        border-color: #34d39966;
+        background: #0d2e1e;
+      }
+      .toast.error {
+        border-color: #f8717166;
+        background: #2e0d0d;
+      }
+
+      /* Modal */
+      .modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: #00000099;
+        z-index: 200;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+        backdrop-filter: blur(6px);
+      }
+      .modal-overlay.show {
+        display: flex;
+      }
+      .modal {
+        background: var(--navy-800);
+        border: 1px solid var(--border-bright);
+        border-radius: var(--radius);
+        padding: 26px 22px;
+        max-width: 440px;
+        width: 100%;
+        animation: slideUp 0.3s ease;
+        max-height: 80vh;
+        overflow-y: auto;
+      }
+      .modal h3 {
+        font-size: 16px;
+        font-weight: 700;
+        margin-bottom: 8px;
+      }
+      .modal p {
+        font-size: 13px;
+        color: var(--text-secondary);
+        line-height: 1.7;
+      }
+      .modal .modal-msg-body {
+        font-size: 13px;
+        color: var(--text-primary);
+        line-height: 1.8;
+        margin: 12px 0;
+      }
+
+      /* Empty state */
+      .empty-state {
+        text-align: center;
+        padding: 32px 20px;
+        color: var(--text-muted);
+      }
+      .empty-state .es-icon {
+        font-size: 36px;
+        margin-bottom: 10px;
+      }
+      .empty-state p {
+        font-size: 13px;
+      }
+
+      /* Admin inbox grouped */
+      .adm-unit-group {
+        margin-bottom: 18px;
+      }
+      .adm-unit-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        padding: 8px 14px;
+        margin-bottom: 8px;
+        background: var(--navy-700);
+        border-radius: var(--radius-sm);
+        border: 1px solid var(--border-bright);
+        cursor: pointer;
+        transition: all 0.15s;
+      }
+      .adm-unit-header:hover {
+        background: var(--navy-600);
+      }
+      .adm-unit-label {
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--accent);
+        flex: 1;
+      }
+      .adm-unit-count {
+        font-size: 11px;
+        background: var(--accent);
+        color: #05091a;
+        padding: 2px 8px;
+        border-radius: 10px;
+        font-weight: 700;
+      }
+      .adm-unit-count.unread-count {
+        background: var(--danger);
+      }
+
+      .adm-msg-row {
+        display: flex;
+        gap: 12px;
+        align-items: flex-start;
+        background: var(--navy-800);
+        border-radius: var(--radius-sm);
+        border: 1px solid var(--border);
+        padding: 12px 14px;
+        margin-bottom: 7px;
+        transition: all 0.15s;
+      }
+      .adm-msg-row:hover {
+        border-color: var(--border-bright);
+      }
+      .adm-msg-row.unread {
+        border-right: 3px solid var(--accent);
+      }
+      .adm-msg-ref-pill {
+        background: var(--navy-600);
+        border: 1px solid var(--accent);
+        color: var(--accent);
+        padding: 3px 10px;
+        border-radius: 10px;
+        font-size: 11px;
+        font-weight: 700;
+        white-space: nowrap;
+        font-variant-numeric: tabular-nums;
+      }
+      .adm-msg-main {
+        flex: 1;
+        min-width: 0;
+      }
+      .adm-msg-row-title {
+        font-size: 13px;
+        font-weight: 600;
+        margin-bottom: 4px;
+      }
+      .adm-msg-row-body {
+        font-size: 12px;
+        color: var(--text-secondary);
+        line-height: 1.7;
+        margin-bottom: 6px;
+      }
+      .adm-msg-row-meta {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+      .adm-msg-date {
+        font-size: 10px;
+        color: var(--text-muted);
+        background: var(--navy-700);
+        padding: 2px 8px;
+        border-radius: 8px;
+      }
+      .adm-msg-replyref {
+        font-size: 10px;
+        color: var(--warning);
+        cursor: pointer;
+        text-decoration: underline;
+      }
+      .adm-msg-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        align-items: flex-end;
+      }
+      .btn-reply-now {
+        background: linear-gradient(135deg, var(--navy-600), var(--navy-500));
+        border: 1px solid var(--accent);
+        color: var(--accent);
+        border-radius: 8px;
+        padding: 5px 12px;
+        font-size: 11px;
+        font-weight: 600;
+        cursor: pointer;
+        font-family: "Vazirmatn", sans-serif;
+        white-space: nowrap;
+        transition: all 0.15s;
+      }
+      .btn-reply-now:hover {
+        background: var(--navy-400);
+        color: white;
+      }
+
+      /* Admin badge in header */
+      .admin-badge {
+        background: linear-gradient(135deg, #3a2200, #5a3800);
+        border: 1px solid var(--gold);
+        color: var(--gold);
+        padding: 3px 10px;
+        border-radius: 12px;
+        font-size: 11px;
+        font-weight: 600;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="bg-photo"></div>
+    <div class="bg-overlay"></div>
+
+    <!-- ═══════════ LOGIN ═══════════ -->
+    <div id="screen-login" class="screen active">
+      <div class="login-card">
+        <div class="login-logo">
+          <div class="icon">🏢</div>
+          <h1>پرتال مجتمع مسکونی</h1>
+          <p>سیستم مدیریت خدمات ساکنین</p>
+        </div>
+        <button class="login-admin-btn" onclick="showAdminLogin()">
+          ⚙️ ورود مدیریت
+        </button>
+        <div class="login-error" id="login-error">
+          شماره بلوک، واحد یا رمز عبور اشتباه است
+        </div>
+        <div id="resident-form">
+          <div class="row-2">
+            <div class="form-group">
+              <label>شماره بلوک</label>
+              <input
+                type="number"
+                id="inp-block"
+                placeholder="مثلاً ۱"
+                min="1"
+                max="10"
+              />
+            </div>
+            <div class="form-group">
+              <label>شماره واحد</label>
+              <input
+                type="number"
+                id="inp-unit"
+                placeholder="مثلاً ۱۲"
+                min="1"
+                max="100"
+              />
+            </div>
+          </div>
+          <div class="form-group">
+            <label>رمز عبور</label>
+            <input
+              type="password"
+              id="inp-pass"
+              placeholder="رمز عبور خود را وارد کنید"
+            />
+          </div>
+          <button class="btn" onclick="doLogin()">ورود به پرتال</button>
+          <p
+            style="
+              text-align: center;
+              font-size: 11px;
+              color: var(--text-muted);
+              margin-top: 14px;
+            "
+          >
+            نمونه: بلوک <strong style="color: var(--accent)">2</strong> · واحد
+            <strong style="color: var(--accent)">14</strong> · رمز
+            <strong style="color: var(--accent)">1234</strong>
+          </p>
+          <p
+            style="
+              text-align: center;
+              font-size: 11px;
+              color: var(--text-muted);
+              margin-top: 14px;
+            "
+          >
+            مدیریت: <strong style="color: var(--accent)"> admin </strong>
+            رمز
+            <strong style="color: var(--accent)"> kangeli </strong>
+          </p>
+        </div>
+        <div id="admin-form" style="display: none">
+          <div class="form-group">
+            <label>نام کاربری مدیر</label>
+            <input type="text" id="inp-admin-user" placeholder="نام کاربری" />
+          </div>
+          <div class="form-group">
+            <label>رمز عبور مدیر</label>
+            <input type="password" id="inp-admin-pass" placeholder="رمز عبور" />
+          </div>
+          <button
+            class="btn"
+            style="background: linear-gradient(135deg, #3a2200, #6b4400)"
+            onclick="doAdminLogin()"
+          >
+            ورود مدیریت
+          </button>
+          <button
+            onclick="hideAdminLogin()"
+            style="
+              margin-top: 10px;
+              background: none;
+              border: none;
+              color: var(--text-muted);
+              font-size: 12px;
+              cursor: pointer;
+              width: 100%;
+              font-family: Vazirmatn, sans-serif;
+            "
+          >
+            ← بازگشت
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══════════ APP ═══════════ -->
+    <div id="screen-app" class="screen">
+      <nav class="topnav">
+        <div class="topnav-brand">
+          <span class="logo">🏢</span>
+          <span>پرتال مجتمع</span>
+        </div>
+        <div class="topnav-center">
+          <div class="user-name" id="nav-name">—</div>
+          <div class="user-unit" id="nav-unit">—</div>
+        </div>
+        <div class="topnav-right">
+          <div class="clock-box">
+            <div class="time" id="live-clock">—</div>
+            <div
+              id="live-date"
+              style="font-size: 10px; color: var(--text-muted)"
+            >
+              —
+            </div>
+          </div>
+          <button class="btn-logout" onclick="doLogout()">خروج</button>
+        </div>
+      </nav>
+
+      <div class="app-content">
+        <!-- HOME -->
+        <div id="tab-home" class="tab-content active">
+          <div class="home-grid">
+            <!-- Right: bookings -->
+            <div class="col-card">
+              <div class="col-card-header">
+                <div style="display: flex; align-items: center; gap: 7px">
+                  <span class="hicon">📋</span>
+                  <h3>رزروهای من</h3>
+                </div>
+              </div>
+              <div class="col-card-body" id="home-bookings-list">
+                <div class="empty-state">
+                  <div class="es-icon">📅</div>
+                  <p>رزروی ندارید</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Center: announcements -->
+            <div class="col-card">
+              <div class="col-card-header">
+                <div style="display: flex; align-items: center; gap: 7px">
+                  <span class="hicon">📢</span>
+                  <h3>اطلاعیه‌ها</h3>
+                </div>
+                <span
+                  id="ann-count"
+                  style="font-size: 11px; color: var(--text-muted)"
+                ></span>
+              </div>
+              <div class="col-card-body" id="home-ann-list">
+                <div class="empty-state">
+                  <div class="es-icon">📭</div>
+                  <p>اطلاعیه‌ای موجود نیست</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Left: inbox + sent messages -->
+            <div
+              class="col-card"
+              style="display: flex; flex-direction: column; max-height: 860px"
+            >
+              <!-- Received -->
+              <div class="col-card-header">
+                <div style="display: flex; align-items: center; gap: 7px">
+                  <span class="arrow-in">
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 20 20"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <!-- در ورودی -->
+                      <rect
+                        x="11"
+                        y="3"
+                        width="7"
+                        height="14"
+                        rx="1.5"
+                        stroke="#34d399"
+                        stroke-width="1.4"
+                        fill="none"
+                      />
+                      <line
+                        x1="14.5"
+                        y1="6"
+                        x2="14.5"
+                        y2="14"
+                        stroke="#34d399"
+                        stroke-width="1.2"
+                        stroke-linecap="round"
+                      />
+                      <!-- فلش به سمت راست/داخل -->
+                      <line
+                        x1="1"
+                        y1="10"
+                        x2="10"
+                        y2="10"
+                        stroke="#34d399"
+                        stroke-width="1.6"
+                        stroke-linecap="round"
+                      />
+                      <polyline
+                        points="6.5,6.5 10.5,10 6.5,13.5"
+                        stroke="#34d399"
+                        stroke-width="1.6"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        fill="none"
+                      />
+                    </svg>
+                  </span>
+                  <h3 style="color: #34d399">پیام های دریافتی</h3>
+                </div>
+                <span
+                  id="inbox-unread-count"
+                  style="font-size: 11px; color: var(--accent)"
+                ></span>
+              </div>
+              <div
+                class="col-card-body"
+                id="home-inbox-list"
+                style="
+                  flex: 1;
+                  min-height: 0;
+                  overflow-y: auto;
+                  border-bottom: 1px solid var(--border);
+                "
+              >
+                <div class="empty-state">
+                  <div class="es-icon">📭</div>
+                  <p>پیامی دریافت نشده</p>
+                </div>
+              </div>
+              <!-- Sent -->
+              <div class="col-card-header" style="border-top: none">
+                <div style="display: flex; align-items: center; gap: 7px">
+                  <span class="arrow-out">
+                    <svg
+                      width="20"
+                      height="20"
+                      viewBox="0 0 20 20"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <!-- در خروجی -->
+                      <rect
+                        x="2"
+                        y="3"
+                        width="7"
+                        height="14"
+                        rx="1.5"
+                        stroke="#f87171"
+                        stroke-width="1.4"
+                        fill="none"
+                      />
+                      <line
+                        x1="5.5"
+                        y1="6"
+                        x2="5.5"
+                        y2="14"
+                        stroke="#f87171"
+                        stroke-width="1.2"
+                        stroke-linecap="round"
+                      />
+                      <!-- فلش به سمت چپ/بیرون -->
+                      <line
+                        x1="9"
+                        y1="10"
+                        x2="19"
+                        y2="10"
+                        stroke="#f87171"
+                        stroke-width="1.6"
+                        stroke-linecap="round"
+                      />
+                      <polyline
+                        points="13.5,6.5 9.5,10 13.5,13.5"
+                        stroke="#f87171"
+                        stroke-width="1.6"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        fill="none"
+                      />
+                    </svg>
+                  </span>
+                  <h3 style="color: #f87171">پیام های ارسالی</h3>
+                </div>
+                <span
+                  id="sent-count"
+                  style="font-size: 11px; color: var(--text-muted)"
+                ></span>
+              </div>
+              <div
+                class="col-card-body"
+                id="home-sent-list"
+                style="flex: 1; min-height: 0; overflow-y: auto"
+              >
+                <div class="empty-state">
+                  <div class="es-icon">📭</div>
+                  <p>پیامی ارسال نشده</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- BOOKING -->
+        <div id="tab-booking" class="tab-content">
+          <div class="section-title">رزرو امکانات</div>
+          <div class="section-sub">
+            یک فضا را انتخاب کرده و زمان دلخواه را رزرو کنید
+          </div>
+          <div class="facility-grid" id="facility-grid"></div>
+          <div class="booking-form" id="booking-form">
+            <h3 id="booking-form-title">انتخاب تاریخ و ساعت</h3>
+            <div class="form-group">
+              <label>تاریخ</label>
+              <input type="date" id="booking-date" />
+            </div>
+            <div class="form-group">
+              <label>انتخاب ساعت</label>
+              <div class="time-slots" id="time-slots"></div>
+            </div>
+            <button class="btn btn-book" onclick="confirmBooking()">
+              ✓ تأیید رزرو
+            </button>
+          </div>
+        </div>
+
+        <!-- MY BOOKINGS -->
+        <div id="tab-mybookings" class="tab-content">
+          <div class="section-title">رزروهای من</div>
+          <div class="section-sub">لیست رزروهای فعال</div>
+          <div id="my-bookings-list"></div>
+        </div>
+
+        <!-- MESSAGES -->
+        <div id="tab-messages" class="tab-content">
+          <div class="send-msg-card" id="send-msg-section">
+            <h3>✉️ ارسال پیام به مدیریت</h3>
+            <div class="form-group">
+              <label>عنوان</label>
+              <input
+                type="text"
+                id="msg-title-inp"
+                placeholder="موضوع پیام..."
+              />
+            </div>
+            <div class="form-group">
+              <label>نوع پیام</label>
+              <select id="msg-type-inp">
+                <option value="اطلاع-رسانی">📋 اطلاع‌رسانی</option>
+                <option value="شکایت">⚠️ شکایت</option>
+                <option value="پیشنهاد">💡 پیشنهاد</option>
+                <option value="قدردانی">🙏 قدردانی</option>
+                <option value="هشدار">🚨 هشدار</option>
+              </select>
+            </div>
+            <div class="form-group" id="reply-ref-group" style="display: none">
+              <label>ارجاع به پیام (شماره مرجع)</label>
+              <input
+                type="text"
+                id="reply-ref-inp"
+                placeholder="مثلاً MSG-001"
+                readonly
+                style="background: var(--navy-900)"
+              />
+              <button
+                onclick="clearReplyRef()"
+                style="
+                  margin-top: 6px;
+                  background: none;
+                  border: none;
+                  color: var(--text-muted);
+                  font-size: 11px;
+                  cursor: pointer;
+                  font-family: Vazirmatn, sans-serif;
+                "
+              >
+                ✕ حذف ارجاع
+              </button>
+            </div>
+            <div class="form-group">
+              <label>متن پیام</label>
+              <textarea
+                id="msg-body-inp"
+                rows="4"
+                placeholder="متن پیام خود را اینجا بنویسید..."
+              ></textarea>
+            </div>
+            <button class="btn" onclick="sendMessage()">📤 ارسال پیام</button>
+          </div>
+
+          <div class="section-title">📥 پیام‌های دریافتی</div>
+          <div class="section-sub">پیام‌های ارسال شده از طرف مدیریت</div>
+          <div id="inbox-list"></div>
+        </div>
+
+        <!-- CHARGES -->
+        <div id="tab-charges" class="tab-content">
+          <div class="section-title">شارژ ماهانه</div>
+          <div class="section-sub">آپلود فیش پرداخت شارژ مجتمع</div>
+          <div class="charge-card">
+            <h3>💳 پرداخت شارژ</h3>
+            <div class="form-group">
+              <label>ماه مورد نظر</label>
+              <select id="charge-month">
+                <option value="">انتخاب ماه...</option>
+                <option>فروردین ۱۴۰۴</option>
+                <option>اردیبهشت ۱۴۰۴</option>
+                <option>خرداد ۱۴۰۴</option>
+                <option>تیر ۱۴۰۴</option>
+                <option>مرداد ۱۴۰۴</option>
+                <option>شهریور ۱۴۰۴</option>
+                <option>مهر ۱۴۰۴</option>
+                <option>آبان ۱۴۰۴</option>
+                <option>آذر ۱۴۰۴</option>
+                <option>دی ۱۴۰۴</option>
+                <option>بهمن ۱۴۰۴</option>
+                <option>اسفند ۱۴۰۴</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>مبلغ پرداختی (تومان)</label>
+              <input
+                type="number"
+                id="charge-amount"
+                placeholder="مثلاً ۵۰۰۰۰۰"
+              />
+            </div>
+            <div
+              class="upload-zone"
+              id="upload-zone"
+              onclick="document.getElementById('file-input').click()"
+              ondragover="
+                this.classList.add('dragover');
+                event.preventDefault();
+              "
+              ondragleave="this.classList.remove('dragover')"
+              ondrop="handleDrop(event)"
+            >
+              <div class="up-icon">📎</div>
+              <p>فیش پرداختی را اینجا بکشید یا کلیک کنید</p>
+              <span>JPG · PNG · PDF — حداکثر ۵ مگابایت</span>
+            </div>
+            <input
+              type="file"
+              id="file-input"
+              accept=".jpg,.jpeg,.png,.pdf"
+              onchange="handleFileSelect(event)"
+            />
+            <div class="file-preview" id="file-preview">
+              <span style="font-size: 22px">📄</span>
+              <div style="flex: 1">
+                <div style="font-size: 12px; font-weight: 500" id="fp-name">
+                  —
+                </div>
+                <div
+                  style="font-size: 11px; color: var(--text-muted)"
+                  id="fp-size"
+                >
+                  —
+                </div>
+              </div>
+              <span
+                style="
+                  cursor: pointer;
+                  font-size: 16px;
+                  color: var(--text-muted);
+                "
+                onclick="clearFile()"
+                >✕</span
+              >
+            </div>
+            <button
+              class="btn"
+              style="margin-top: 14px"
+              onclick="submitCharge()"
+            >
+              📤 ارسال فیش پرداخت
+            </button>
+          </div>
+          <div class="charge-card">
+            <h3>📂 تاریخچه پرداخت‌ها</h3>
+            <div id="charge-history-list"></div>
+          </div>
+        </div>
+
+        <!-- ADMIN PANEL -->
+        <div id="tab-admin" class="tab-content">
+          <div
+            style="
+              display: flex;
+              align-items: center;
+              gap: 10px;
+              margin-bottom: 18px;
+            "
+          >
+            <span class="admin-badge">⚙️ پنل مدیریت</span>
+            <span class="section-title" style="margin: 0">مدیریت مجتمع</span>
+          </div>
+          <div class="admin-grid">
+            <!-- Send message to residents -->
+            <div class="admin-card">
+              <h3>📤 ارسال پیام به ساکنین</h3>
+              <div class="form-group">
+                <label>گیرندگان</label>
+                <div class="units-select" id="admin-units-select"></div>
+              </div>
+              <div class="form-group">
+                <label>عنوان پیام</label>
+                <input type="text" id="adm-msg-title" placeholder="عنوان..." />
+              </div>
+              <div class="form-group">
+                <label>نوع پیام</label>
+                <select id="adm-msg-type">
+                  <option value="اطلاع-رسانی">📋 اطلاع‌رسانی</option>
+                  <option value="هشدار">🚨 هشدار</option>
+                  <option value="شکایت">⚠️ شکایت</option>
+                  <option value="قدردانی">🙏 قدردانی</option>
+                  <option value="پیشنهاد">💡 پیشنهاد</option>
+                </select>
+              </div>
+              <div
+                class="form-group"
+                id="adm-reply-ref-group"
+                style="display: none"
+              >
+                <label>پاسخ به پیام (شماره مرجع)</label>
+                <input
+                  type="text"
+                  id="adm-reply-ref"
+                  readonly
+                  style="background: var(--navy-900)"
+                />
+                <button
+                  onclick="clearAdminReplyRef()"
+                  style="
+                    background: none;
+                    border: none;
+                    color: var(--text-muted);
+                    font-size: 11px;
+                    cursor: pointer;
+                    font-family: Vazirmatn, sans-serif;
+                    margin-top: 4px;
+                  "
+                >
+                  ✕ حذف ارجاع
+                </button>
+              </div>
+              <div class="form-group">
+                <label>متن پیام</label>
+                <textarea
+                  id="adm-msg-body"
+                  rows="4"
+                  placeholder="متن پیام..."
+                ></textarea>
+              </div>
+              <button class="btn" onclick="adminSendMessage()">
+                📤 ارسال پیام
+              </button>
+            </div>
+
+            <!-- Add announcement -->
+            <div class="admin-card">
+              <h3>📢 افزودن اطلاعیه عمومی</h3>
+              <div class="form-group">
+                <label>عنوان اطلاعیه</label>
+                <input type="text" id="adm-ann-title" placeholder="عنوان..." />
+              </div>
+              <div class="form-group">
+                <label>نوع</label>
+                <select id="adm-ann-type">
+                  <option value="info">📋 اطلاع‌رسانی</option>
+                  <option value="warn">⚠️ هشدار</option>
+                  <option value="danger">🚨 فوری</option>
+                  <option value="success">✅ مثبت</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>متن اطلاعیه</label>
+                <textarea
+                  id="adm-ann-body"
+                  rows="4"
+                  placeholder="متن اطلاعیه..."
+                ></textarea>
+              </div>
+              <button class="btn" onclick="adminAddAnn()">
+                📌 انتشار اطلاعیه
+              </button>
+            </div>
+
+            <!-- Inbox: resident messages grouped by unit -->
+            <div class="admin-card" style="grid-column: 1 / -1">
+              <h3
+                style="
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
+                "
+              >
+                <span>📨 پیام‌های واحدها (دریافتی و ارسالی)</span>
+                <div style="display: flex; gap: 8px; align-items: center">
+                  <span
+                    id="adm-inbox-total"
+                    style="
+                      font-size: 11px;
+                      color: var(--text-muted);
+                      font-weight: 400;
+                    "
+                  ></span>
+                  <select
+                    id="adm-inbox-filter"
+                    onchange="renderAdminInbox()"
+                    style="
+                      background: var(--navy-800);
+                      border: 1px solid var(--border);
+                      color: var(--text-secondary);
+                      border-radius: 8px;
+                      padding: 4px 10px;
+                      font-size: 12px;
+                      font-family: Vazirmatn, sans-serif;
+                      outline: none;
+                    "
+                  >
+                    <option value="all">همه واحدها</option>
+                  </select>
+                </div>
+              </h3>
+              <div id="admin-inbox-list"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- /app-content -->
+
+      <!-- Bottom Tabs -->
+      <nav class="bottom-tabs" id="bottom-tabs">
+        <button
+          class="tab-btn active"
+          onclick="goTab('tab-home')"
+          id="btn-tab-home"
+        >
+          <span class="tab-icon">🏠</span><span class="tab-label">خانه</span>
+        </button>
+        <button
+          class="tab-btn"
+          onclick="goTab('tab-booking')"
+          id="btn-tab-booking"
+        >
+          <span class="tab-icon">🗓️</span><span class="tab-label">رزرو</span>
+        </button>
+        <button
+          class="tab-btn"
+          onclick="goTab('tab-messages')"
+          id="btn-tab-messages"
+        >
+          <span class="tab-icon">✉️</span
+          ><span class="tab-label">پیام به مدیریت</span>
+          <span class="badge" id="tab-msg-badge" style="display: none"></span>
+        </button>
+        <button
+          class="tab-btn"
+          onclick="goTab('tab-charges')"
+          id="btn-tab-charges"
+        >
+          <span class="tab-icon">💳</span><span class="tab-label">شارژ</span>
+        </button>
+      </nav>
+    </div>
+
+    <!-- Confirm Modal -->
+    <div class="modal-overlay" id="confirm-modal">
+      <div class="modal">
+        <h3 id="modal-title">تأیید</h3>
+        <p id="modal-body"></p>
+        <div class="modal-actions">
+          <button class="btn-sm btn-cancel-modal" onclick="closeModal()">
+            انصراف
+          </button>
+          <button class="btn-sm btn-confirm" id="modal-confirm-btn">
+            تأیید
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Message detail modal -->
+    <div class="modal-overlay" id="msg-detail-modal">
+      <div class="modal">
+        <div
+          style="
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+          "
+        >
+          <h3 id="mdm-title"></h3>
+          <button
+            onclick="closeMsgModal()"
+            style="
+              background: none;
+              border: none;
+              color: var(--text-muted);
+              font-size: 18px;
+              cursor: pointer;
+            "
+          >
+            ✕
+          </button>
+        </div>
+        <div id="mdm-type-badge"></div>
+        <div class="modal-msg-body" id="mdm-body"></div>
+        <div
+          id="mdm-meta"
+          style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px"
+        ></div>
+        <div id="mdm-ref-section" style="margin-top: 12px; display: none">
+          <div
+            style="
+              font-size: 11px;
+              color: var(--text-muted);
+              margin-bottom: 6px;
+            "
+          >
+            ارجاع به پیام اصلی:
+          </div>
+          <div
+            id="mdm-ref-content"
+            style="
+              background: var(--navy-900);
+              border-radius: var(--radius-sm);
+              padding: 10px;
+              font-size: 12px;
+              color: var(--text-secondary);
+              border: 1px solid var(--border);
+            "
+          ></div>
+        </div>
+        <div
+          style="display: flex; gap: 10px; margin-top: 16px; flex-wrap: wrap"
+        >
+          <button class="reply-btn" onclick="replyToMsg()" id="mdm-reply-btn">
+            ↩️ پاسخ
+          </button>
+          <button
+            class="reply-btn"
+            onclick="closeMsgModal()"
+            style="color: var(--text-muted)"
+          >
+            بستن
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="toast" id="toast"></div>
+
+    <script>
+      // ═══════════════════════════════════════════
+      // STATIC DATA
+      // ═══════════════════════════════════════════
+      const USERS = [
+        { block: 1, unit: 5, pass: "1111", name: "علی محمدی" },
+        { block: 1, unit: 8, pass: "2222", name: "مریم احمدی" },
+        { block: 2, unit: 14, pass: "1234", name: "رضا کریمی" },
+        { block: 2, unit: 21, pass: "5678", name: "فاطمه نوری" },
+        { block: 3, unit: 3, pass: "9999", name: "حسن رضایی" },
+        { block: 3, unit: 17, pass: "0000", name: "زهرا موسوی" },
+      ];
+      const ADMIN_USER = "admin";
+      const ADMIN_PASS = "kangeli";
+
+      const FACILITIES = [
+        { id: "tennis", name: "زمین تنیس", icon: "🎾", cap: "حداکثر ۴ نفر" },
+        {
+          id: "pingpong",
+          name: "میز پینگ‌پنگ",
+          icon: "🏓",
+          cap: "حداکثر ۲ نفر",
+        },
+        { id: "hall", name: "سالن اجتماعات", icon: "🏛️", cap: "حداکثر ۵۰ نفر" },
+        { id: "cafe", name: "میز کافه", icon: "☕", cap: "حداکثر ۶ نفر" },
+        { id: "bath", name: "حمام ترکی", icon: "🏛️", cap: "حداکثر 4 نفر" },
+      ];
+      const TIMES = [
+        "۸:۰۰",
+        "۱۰:۰۰",
+        "۱۲:۰۰",
+        "۱۴:۰۰",
+        "۱۶:۰۰",
+        "۱۸:۰۰",
+        "۲۰:۰۰",
+        "۲۲:۰۰",
+      ];
+      const DAYS_FA = [
+        "یکشنبه",
+        "دوشنبه",
+        "سه‌شنبه",
+        "چهارشنبه",
+        "پنجشنبه",
+        "جمعه",
+        "شنبه",
+      ];
+      const MSG_TYPES = ["هشدار", "شکایت", "قدردانی", "اطلاع-رسانی", "پیشنهاد"];
+
+      // ═══════════════════════════════════════════
+      // STATE
+      // ═══════════════════════════════════════════
+      let currentUser = null;
+      let isAdmin = false;
+      let selectedFacility = null;
+      let selectedSlot = null;
+      let selectedFile = null;
+      let pendingBookingData = null;
+      let viewingMsgId = null;
+      let pendingModalAction = null;
+
+      // ═══════════════════════════════════════════
+      // localStorage HELPERS
+      // key schema:
+      //   bookings:{block}:{unit}  → array
+      //   announcements            → array
+      //   messages:{block}:{unit}  → array (inbox of unit)
+      //   charges:{block}:{unit}   → array
+      //   msgCounter               → number
+      // ═══════════════════════════════════════════
+      function lsGet(key) {
+        try {
+          return JSON.parse(localStorage.getItem(key));
+        } catch {
+          return null;
+        }
+      }
+      function lsSet(key, val) {
+        try {
+          localStorage.setItem(key, JSON.stringify(val));
+        } catch (e) {
+          console.warn(e);
+        }
+      }
+
+      function bookingKey() {
+        return `bookings:${currentUser.block}:${currentUser.unit}`;
+      }
+      function chargeKey() {
+        return `charges:${currentUser.block}:${currentUser.unit}`;
+      }
+      function inboxKey(block, unit) {
+        return `messages:${block}:${unit}`;
+      }
+
+      function getBookings() {
+        return lsGet(bookingKey()) || [];
+      }
+      function saveBookings(arr) {
+        lsSet(bookingKey(), arr);
+      }
+      function getCharges() {
+        return lsGet(chargeKey()) || defaultCharges();
+      }
+      function saveCharges(arr) {
+        lsSet(chargeKey(), arr);
+      }
+      function getAnnouncements() {
+        return lsGet("announcements") || defaultAnn();
+      }
+      function saveAnnouncements(arr) {
+        lsSet("announcements", arr);
+      }
+      function getInbox(block, unit) {
+        return lsGet(inboxKey(block, unit)) || [];
+      }
+      function saveInbox(block, unit, arr) {
+        lsSet(inboxKey(block, unit), arr);
+      }
+
+      function nextMsgId() {
+        let n = parseInt(lsGet("msgCounter") || 0) + 1;
+        lsSet("msgCounter", n);
+        return "MSG-" + String(n).padStart(4, "0");
+      }
+
+      function defaultCharges() {
+        return [
+          { month: "شهریور ۱۴۰۴", amount: "۵۸۰,۰۰۰", status: "paid" },
+          { month: "مرداد ۱۴۰۴", amount: "۵۸۰,۰۰۰", status: "paid" },
+          { month: "خرداد ۱۴۰۴", amount: "۵۵۰,۰۰۰", status: "pending" },
+        ];
+      }
+      function defaultAnn() {
+        return [
+          {
+            id: "ANN-0001",
+            title: "تعمیر آسانسور بلوک ۳",
+            body: "آسانسور بلوک ۳ روز پنجشنبه از ساعت ۹ تا ۱۳ جهت سرویس از کار می‌افتد.",
+            type: "warn",
+            date: "۱۴ مهر ۱۴۰۴",
+            isNew: true,
+          },
+          {
+            id: "ANN-0002",
+            title: "جلسه شورای ساکنین",
+            body: "جلسه ماهانه روز جمعه ۱۸ مهر ساعت ۱۷ در سالن اجتماعات.",
+            type: "info",
+            date: "۱۲ مهر ۱۴۰۴",
+            isNew: true,
+          },
+          {
+            id: "ANN-0003",
+            title: "قطع آب — فردا صبح",
+            body: "آب ساختمان فردا از ساعت ۷ تا ۱۱ قطع خواهد بود. ذخیره آب توصیه می‌شود.",
+            type: "danger",
+            date: "۵ مهر ۱۴۰۴",
+            isNew: false,
+          },
+        ];
+      }
+
+      // ═══════════════════════════════════════════
+      // CLOCK
+      // ═══════════════════════════════════════════
+      function updateClock() {
+        const now = new Date();
+        const h = String(now.getHours()).padStart(2, "0");
+        const m = String(now.getMinutes()).padStart(2, "0");
+        // const s = String(now.getSeconds()).padStart(2, "0");
+        document.getElementById("live-clock").textContent = `${h}:${m}`;
+        const day = DAYS_FA[now.getDay()];
+        document.getElementById("live-date").textContent =
+          `${day} ${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}`;
+      }
+      setInterval(updateClock, 60000);
+      updateClock();
+
+      // ═══════════════════════════════════════════
+      // LOGIN
+      // ═══════════════════════════════════════════
+      function showAdminLogin() {
+        document.getElementById("resident-form").style.display = "none";
+        document.getElementById("admin-form").style.display = "block";
+        document.getElementById("login-error").style.display = "none";
+      }
+      function hideAdminLogin() {
+        document.getElementById("resident-form").style.display = "block";
+        document.getElementById("admin-form").style.display = "none";
+        document.getElementById("login-error").style.display = "none";
+      }
+      function doLogin() {
+        const block = parseInt(document.getElementById("inp-block").value);
+        const unit = parseInt(document.getElementById("inp-unit").value);
+        const pass = document.getElementById("inp-pass").value;
+        const user = USERS.find(
+          (u) => u.block === block && u.unit === unit && u.pass === pass,
+        );
+        if (!user) {
+          document.getElementById("login-error").style.display = "block";
+          return;
+        }
+        document.getElementById("login-error").style.display = "none";
+        currentUser = user;
+        isAdmin = false;
+        initApp();
+      }
+      function doAdminLogin() {
+        const u = document.getElementById("inp-admin-user").value;
+        const p = document.getElementById("inp-admin-pass").value;
+        if (u !== ADMIN_USER || p !== ADMIN_PASS) {
+          document.getElementById("login-error").style.display = "block";
+          document.getElementById("login-error").textContent =
+            "نام کاربری یا رمز مدیریت اشتباه است";
+          return;
+        }
+        document.getElementById("login-error").style.display = "none";
+        currentUser = { block: 0, unit: 0, name: "مدیر مجتمع" };
+        isAdmin = true;
+        initApp();
+      }
+      document.getElementById("inp-pass").addEventListener("keydown", (e) => {
+        if (e.key === "Enter") doLogin();
+      });
+      document
+        .getElementById("inp-admin-pass")
+        .addEventListener("keydown", (e) => {
+          if (e.key === "Enter") doAdminLogin();
+        });
+
+      function doLogout() {
+        currentUser = null;
+        isAdmin = false;
+        selectedFacility = null;
+        selectedSlot = null;
+        document.getElementById("screen-login").classList.add("active");
+        document.getElementById("screen-app").classList.remove("active");
+        document.getElementById("inp-pass").value = "";
+        document.getElementById("inp-admin-user").value = "";
+        document.getElementById("inp-admin-pass").value = "";
+        hideAdminLogin();
+      }
+
+      // ═══════════════════════════════════════════
+      // INIT
+      // ═══════════════════════════════════════════
+      function initApp() {
+        document.getElementById("screen-login").classList.remove("active");
+        document.getElementById("screen-app").classList.add("active");
+
+        // Header
+        document.getElementById("nav-name").textContent = currentUser.name;
+        document.getElementById("nav-unit").textContent = isAdmin
+          ? "⚙️ مدیریت مجتمع"
+          : `بلوک ${currentUser.block} · واحد ${currentUser.unit}`;
+
+        // Show/hide admin tab
+        const existingAdminBtn = document.getElementById("btn-tab-admin");
+        if (isAdmin) {
+          if (!existingAdminBtn) {
+            const nav = document.getElementById("bottom-tabs");
+            const btn = document.createElement("button");
+            btn.className = "tab-btn";
+            btn.id = "btn-tab-admin";
+            btn.innerHTML =
+              '<span class="tab-icon">⚙️</span><span class="tab-label">مدیریت</span>';
+            btn.onclick = () => goTab("tab-admin");
+            nav.appendChild(btn);
+          }
+          // hide resident-only tabs
+          [
+            "btn-tab-booking",
+            "btn-tab-mybookings",
+            "btn-tab-messages",
+            "btn-tab-charges",
+          ].forEach((id) => {
+            const el = document.getElementById(id);
+            if (el) el.style.display = "none";
+          });
+          renderAdminInbox();
+          renderAdminUnitsSelect();
+          goTab("tab-admin");
+        } else {
+          if (existingAdminBtn) existingAdminBtn.remove();
+          [
+            "btn-tab-booking",
+            "btn-tab-mybookings",
+            "btn-tab-messages",
+            "btn-tab-charges",
+          ].forEach((id) => {
+            const el = document.getElementById(id);
+            if (el) el.style.display = "";
+          });
+          renderFacilities();
+          renderMyBookings();
+          renderHomeBookings();
+          renderAnnouncements();
+          renderHomeInbox();
+          renderHomeSent();
+          renderInbox();
+          renderChargeHistory();
+          updateInboxBadge();
+          const today = new Date();
+          document.getElementById("booking-date").valueAsDate = today;
+          goTab("tab-home");
+        }
+      }
+
+      // ═══════════════════════════════════════════
+      // TAB NAVIGATION
+      // ═══════════════════════════════════════════
+      function goTab(id) {
+        document
+          .querySelectorAll(".tab-content")
+          .forEach((t) => t.classList.remove("active"));
+        document
+          .querySelectorAll(".tab-btn")
+          .forEach((b) => b.classList.remove("active"));
+        document.getElementById(id).classList.add("active");
+        const btnId = "btn-" + id;
+        if (document.getElementById(btnId))
+          document.getElementById(btnId).classList.add("active");
+      }
+
+      // ═══════════════════════════════════════════
+      // ANNOUNCEMENTS
+      // ═══════════════════════════════════════════
+      function renderAnnouncements() {
+        const ann = getAnnouncements();
+        const list = document.getElementById("home-ann-list");
+        document.getElementById("ann-count").textContent = ann.length
+          ? `${ann.length} مورد`
+          : "";
+        if (!ann.length) {
+          list.innerHTML = `<div class="empty-state"><div class="es-icon">📭</div><p>اطلاعیه‌ای موجود نیست</p></div>`;
+          return;
+        }
+        const icons = { info: "📋", warn: "⚠️", danger: "🚨", success: "✅" };
+        list.innerHTML = ann
+          .map(
+            (a) => `
+    <div class="ann-item ${a.type}" id="ann-${a.id}">
+      <div class="ann-item-header">
+        <div class="ann-item-title">${icons[a.type] || "📢"} ${a.title}</div>
+        ${isAdmin ? `<button class="btn-del-ann" onclick="deleteAnn('${a.id}')" title="حذف اطلاعیه">🗑 حذف</button>` : ""}
+      </div>
+      <div class="ann-item-body">${a.body}</div>
+      <div class="ann-item-footer">
+        <span class="ann-date">${a.date}</span>
+        <span class="ann-badge ${a.isNew ? "new" : ""}">${a.isNew ? "🔴 جدید" : "اطلاعیه"}</span>
+      </div>
+    </div>
+  `,
+          )
+          .join("");
+        // اسکرول بعد از ۵ اطلاعیه
+        if (ann.length > 5) list.classList.add("scrollable");
+        else list.classList.remove("scrollable");
+      }
+
+      function deleteAnn(id) {
+        let ann = getAnnouncements();
+        ann = ann.filter((a) => a.id !== id);
+        saveAnnouncements(ann);
+        renderAnnouncements();
+        showToast("اطلاعیه حذف شد", "");
+      }
+
+      function adminAddAnn() {
+        const title = document.getElementById("adm-ann-title").value.trim();
+        const body = document.getElementById("adm-ann-body").value.trim();
+        const type = document.getElementById("adm-ann-type").value;
+        if (!title || !body) {
+          showToast("عنوان و متن الزامی است", "error");
+          return;
+        }
+        const ann = getAnnouncements();
+        const newAnn = {
+          id:
+            "ANN-" + String(ann.length + 1).padStart(4, "0") + "-" + Date.now(),
+          title,
+          body,
+          type,
+          date: new Date().toLocaleDateString("fa-IR"),
+          isNew: true,
+        };
+        ann.unshift(newAnn);
+        saveAnnouncements(ann);
+        document.getElementById("adm-ann-title").value = "";
+        document.getElementById("adm-ann-body").value = "";
+        renderAnnouncements();
+        showToast("✓ اطلاعیه منتشر شد", "success");
+      }
+
+      // ═══════════════════════════════════════════
+      // BOOKING
+      // ═══════════════════════════════════════════
+      function renderFacilities() {
+        document.getElementById("facility-grid").innerHTML = FACILITIES.map(
+          (f) => `
+    <div class="facility-card" id="fac-${f.id}" onclick="selectFacility('${f.id}')">
+      <div class="fac-icon">${f.icon}</div>
+      <div class="fac-name">${f.name}</div>
+      <div class="fac-cap">${f.cap}</div>
+    </div>
+  `,
+        ).join("");
+      }
+
+      function selectFacility(id) {
+        document
+          .querySelectorAll(".facility-card")
+          .forEach((c) => c.classList.remove("selected"));
+        document.getElementById("fac-" + id).classList.add("selected");
+        selectedFacility = FACILITIES.find((f) => f.id === id);
+        selectedSlot = null;
+        document.getElementById("booking-form").classList.add("show");
+        document.getElementById("booking-form-title").textContent =
+          `رزرو ${selectedFacility.name}`;
+        renderTimeSlots();
+      }
+
+      function renderTimeSlots() {
+        const seed = (selectedFacility?.id || "x").charCodeAt(0);
+        document.getElementById("time-slots").innerHTML = TIMES.map((t, i) => {
+          const booked = (seed + i) % 5 === 0;
+          return `<div class="slot ${booked ? "booked" : ""}" onclick="${booked ? "" : ` selectSlot(this,'${t}')`}">${t}</div>`;
+        }).join("");
+      }
+
+      function selectSlot(el, time) {
+        document
+          .querySelectorAll(".slot")
+          .forEach((s) => s.classList.remove("selected"));
+        el.classList.add("selected");
+        selectedSlot = time;
+      }
+
+      function confirmBooking() {
+        if (!selectedFacility) {
+          showToast("لطفاً یک فضا انتخاب کنید", "error");
+          return;
+        }
+        if (!selectedSlot) {
+          showToast("لطفاً یک ساعت انتخاب کنید", "error");
+          return;
+        }
+        const date = document.getElementById("booking-date").value;
+        if (!date) {
+          showToast("لطفاً تاریخ را انتخاب کنید", "error");
+          return;
+        }
+        pendingBookingData = {
+          facility: selectedFacility,
+          slot: selectedSlot,
+          date,
+        };
+        showModal(
+          `رزرو ${selectedFacility.name}`,
+          `آیا از رزرو ${selectedFacility.name} در تاریخ ${date} ساعت ${selectedSlot} اطمینان دارید؟`,
+          doBook,
+        );
+      }
+
+      function doBook() {
+        const b = pendingBookingData;
+        const bookings = getBookings();
+        bookings.push({
+          id: Date.now(),
+          facilityId: b.facility.id,
+          facilityName: b.facility.name,
+          icon: b.facility.icon,
+          date: b.date,
+          slot: b.slot,
+          status: "confirmed",
+        });
+        saveBookings(bookings);
+        renderMyBookings();
+        renderHomeBookings();
+        closeModal();
+        showToast(`✓ ${b.facility.name} رزرو شد`, "success");
+        selectedFacility = null;
+        selectedSlot = null;
+        document
+          .querySelectorAll(".facility-card")
+          .forEach((c) => c.classList.remove("selected"));
+        document.getElementById("booking-form").classList.remove("show");
+      }
+
+      function renderMyBookings() {
+        const bookings = getBookings();
+        const list = document.getElementById("my-bookings-list");
+        if (!bookings.length) {
+          list.innerHTML = `<div class="empty-state"><div class="es-icon">📅</div><p>رزروی ثبت نشده</p></div>`;
+          return;
+        }
+        list.innerHTML = bookings
+          .map(
+            (b) => `
+    <div class="booking-item">
+      <div class="bi-info">
+        <h4>${b.icon} ${b.facilityName}</h4>
+        <p>📅 ${b.date} · ⏰ ${b.slot}</p>
+        <button class="btn-cancel" onclick="cancelBooking(${b.id})">لغو رزرو</button>
+      </div>
+      <span class="bi-badge confirmed">✓ تأیید شده</span>
+    </div>
+  `,
+          )
+          .join("");
+      }
+
+      function renderHomeBookings() {
+        const bookings = getBookings();
+        const list = document.getElementById("home-bookings-list");
+        if (!bookings.length) {
+          list.innerHTML = `<div class="empty-state"><div class="es-icon">📅</div><p>رزروی ندارید</p></div>`;
+          return;
+        }
+        list.innerHTML = bookings
+          .map(
+            (b) => `
+    <div class="bk-mini">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+        <h4>${b.icon} ${b.facilityName}</h4>
+        <span class="bk-status confirmed" style="font-size:10px;">✓ تأیید</span>
+      </div>
+      <p>📅 ${b.date}</p>
+      <p>⏰ ${b.slot}</p>
+      <button class="btn-cancel" style="margin-top:7px;width:100%;text-align:center;" onclick="cancelBooking(${b.id})">🗑 لغو رزرو</button>
+    </div>
+  `,
+          )
+          .join("");
+      }
+
+      function cancelBooking(id) {
+        showModal("لغو رزرو", "آیا از لغو این رزرو اطمینان دارید؟", () => {
+          let bookings = getBookings();
+          bookings = bookings.filter((b) => b.id !== id);
+          saveBookings(bookings);
+          renderMyBookings();
+          renderHomeBookings();
+          closeModal();
+          showToast("رزرو لغو شد", "");
+        });
+      }
+
+      // ═══════════════════════════════════════════
+      // CHARGES
+      // ═══════════════════════════════════════════
+      function handleFileSelect(e) {
+        const f = e.target.files[0];
+        if (f) showFile(f);
+      }
+      function handleDrop(e) {
+        e.preventDefault();
+        document.getElementById("upload-zone").classList.remove("dragover");
+        const f = e.dataTransfer.files[0];
+        if (f) showFile(f);
+      }
+      function showFile(f) {
+        selectedFile = f;
+        document.getElementById("fp-name").textContent = f.name;
+        document.getElementById("fp-size").textContent =
+          (f.size / 1024).toFixed(1) + " KB";
+        document.getElementById("file-preview").classList.add("show");
+      }
+      function clearFile() {
+        selectedFile = null;
+        document.getElementById("file-input").value = "";
+        document.getElementById("file-preview").classList.remove("show");
+      }
+
+      function submitCharge() {
+        const month = document.getElementById("charge-month").value;
+        const amount = document.getElementById("charge-amount").value;
+        if (!month) {
+          showToast("لطفاً ماه را انتخاب کنید", "error");
+          return;
+        }
+        if (!amount) {
+          showToast("لطفاً مبلغ را وارد کنید", "error");
+          return;
+        }
+        if (!selectedFile) {
+          showToast("لطفاً فیش را آپلود کنید", "error");
+          return;
+        }
+        showModal(
+          "ارسال فیش پرداخت",
+          `فیش پرداخت ${month} به مبلغ ${parseInt(amount).toLocaleString("fa")} تومان ارسال شود؟`,
+          () => {
+            const charges = getCharges();
+            charges.unshift({
+              month,
+              amount: parseInt(amount).toLocaleString(),
+              status: "pending",
+            });
+            saveCharges(charges);
+            renderChargeHistory();
+            clearFile();
+            document.getElementById("charge-month").value = "";
+            document.getElementById("charge-amount").value = "";
+            closeModal();
+            showToast("✓ فیش با موفقیت ارسال شد", "success");
+          },
+        );
+      }
+
+      function renderChargeHistory() {
+        const charges = getCharges();
+        document.getElementById("charge-history-list").innerHTML = charges
+          .map(
+            (c) => `
+    <div class="charge-row">
+      <div><div class="cr-month">${c.month}</div><div class="cr-amount">${c.amount} تومان</div></div>
+      <span class="cr-status ${c.status}">${c.status === "paid" ? "✓ پرداخت شده" : "⏳ در انتظار"}</span>
+    </div>
+  `,
+          )
+          .join("");
+      }
+
+      // ═══════════════════════════════════════════
+      // MESSAGING — RESIDENT SIDE
+      // ═══════════════════════════════════════════
+      let currentReplyRef = null;
+
+      function sentKey() {
+        return `sent:${currentUser.block}:${currentUser.unit}`;
+      }
+      function getSent() {
+        return lsGet(sentKey()) || [];
+      }
+      function saveSent(arr) {
+        lsSet(sentKey(), arr);
+      }
+
+      function sendMessage() {
+        const title = document.getElementById("msg-title-inp").value.trim();
+        const type = document.getElementById("msg-type-inp").value;
+        const body = document.getElementById("msg-body-inp").value.trim();
+        if (!title || !body) {
+          showToast("عنوان و متن الزامی است", "error");
+          return;
+        }
+
+        const adminInbox = lsGet("admin-inbox") || [];
+        const msgId = nextMsgId();
+        const dateStr = new Date().toLocaleString("fa-IR");
+        adminInbox.unshift({
+          id: msgId,
+          from: `بلوک ${currentUser.block} · واحد ${currentUser.unit} — ${currentUser.name}`,
+          fromBlock: currentUser.block,
+          fromUnit: currentUser.unit,
+          title,
+          type,
+          body,
+          replyRef: currentReplyRef || null,
+          date: dateStr,
+          read: false,
+        });
+        lsSet("admin-inbox", adminInbox);
+
+        // save to sent box
+        const sent = getSent();
+        sent.unshift({
+          id: msgId,
+          title,
+          type,
+          body,
+          replyRef: currentReplyRef || null,
+          date: dateStr,
+        });
+        saveSent(sent);
+
+        document.getElementById("msg-title-inp").value = "";
+        document.getElementById("msg-body-inp").value = "";
+        currentReplyRef = null;
+        document.getElementById("reply-ref-group").style.display = "none";
+        renderHomeSent();
+        showToast(`✓ پیام ${msgId} ارسال شد`, "success");
+      }
+
+      function clearReplyRef() {
+        currentReplyRef = null;
+        document.getElementById("reply-ref-group").style.display = "none";
+      }
+
+      function renderHomeInbox() {
+        const msgs = getInbox(currentUser.block, currentUser.unit);
+        const list = document.getElementById("home-inbox-list");
+        const unread = msgs.filter((m) => !m.read).length;
+        document.getElementById("inbox-unread-count").textContent = unread
+          ? `${unread} جدید`
+          : `${msgs.length} پیام`;
+        if (!msgs.length) {
+          list.innerHTML = `<div class="empty-state"><div class="es-icon">📭</div><p>پیامی دریافت نشده</p></div>`;
+          return;
+        }
+        list.innerHTML = msgs
+          .map(
+            (m) => `
+    <div class="msg-item ${m.read ? "" : "unread"}" onclick="openMsgDetail('${m.id}', false)">
+      <div class="msg-item-top">
+        <span class="msg-type-badge ${m.type}">${m.type}</span>
+        <span class="msg-ref" style="display:flex;align-items:center;gap:4px;">
+          <svg width="15" height="15" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
+            <rect x="11" y="3" width="7" height="14" rx="1.5" stroke="#34d399" stroke-width="1.5" fill="none"/>
+            <line x1="14.5" y1="6" x2="14.5" y2="14" stroke="#34d399" stroke-width="1.2" stroke-linecap="round"/>
+            <line x1="1" y1="10" x2="10" y2="10" stroke="#34d399" stroke-width="1.7" stroke-linecap="round"/>
+            <polyline points="6.5,6.5 10.5,10 6.5,13.5" stroke="#34d399" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          </svg>
+          ${m.id}
+        </span>
+      </div>
+      <div class="msg-title">${m.title}</div>
+      <div class="msg-preview">${m.body}</div>
+      <div class="msg-date">📅 ${m.date}</div>
+    </div>
+  `,
+          )
+          .join("");
+        // اسکرول بعد از ۳ پیام
+        if (msgs.length > 3) list.classList.add("scrollable");
+        else list.classList.remove("scrollable");
+      }
+
+      function renderHomeSent() {
+        const sent = getSent();
+        const list = document.getElementById("home-sent-list");
+        document.getElementById("sent-count").textContent = sent.length
+          ? `${sent.length} پیام`
+          : "";
+        if (!sent.length) {
+          list.innerHTML = `<div class="empty-state"><div class="es-icon">📤</div><p>پیامی ارسال نشده</p></div>`;
+          return;
+        }
+        list.innerHTML = sent
+          .map(
+            (m) => `
+    <div class="msg-item" style="opacity:.9;">
+      <div class="msg-item-top">
+        <span class="msg-type-badge ${m.type}">${m.type}</span>
+        <span class="msg-ref" style="display:flex;align-items:center;gap:4px;">
+          <svg width="15" height="15" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
+            <rect x="2" y="3" width="7" height="14" rx="1.5" stroke="#f87171" stroke-width="1.5" fill="none"/>
+            <line x1="5.5" y1="6" x2="5.5" y2="14" stroke="#f87171" stroke-width="1.2" stroke-linecap="round"/>
+            <line x1="9" y1="10" x2="19" y2="10" stroke="#f87171" stroke-width="1.7" stroke-linecap="round"/>
+            <polyline points="13.5,6.5 9.5,10 13.5,13.5" stroke="#f87171" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          </svg>
+          ${m.id}
+        </span>
+      </div>
+      <div class="msg-title">${m.title}</div>
+      <div class="msg-preview">${m.body}</div>
+      <div class="msg-date" style="display:flex;justify-content:space-between;align-items:center;">
+        <span>📅 ${m.date}</span>
+        ${m.replyRef ? `<span style="font-size:10px;color:var(--warning);">↩️ ${m.replyRef}</span>` : '<span style="font-size:10px;color:var(--text-muted);">→ مدیریت</span>'}
+      </div>
+    </div>
+  `,
+          )
+          .join("");
+        // اسکرول بعد از ۳ پیام
+        if (sent.length > 3) list.classList.add("scrollable");
+        else list.classList.remove("scrollable");
+      }
+
+      function renderInbox() {
+        const msgs = getInbox(currentUser.block, currentUser.unit);
+        const list = document.getElementById("inbox-list");
+        if (!msgs.length) {
+          list.innerHTML = `<div class="empty-state"><div class="es-icon">📭</div><p>پیامی دریافت نشده</p></div>`;
+          return;
+        }
+        list.innerHTML = msgs
+          .map(
+            (m) => `
+    <div class="msg-full-item ${m.read ? "" : "unread"}" id="mfi-${m.id}">
+      <div class="msg-full-header">
+        <div>
+          <div class="msg-full-title">${m.title}</div>
+          <span class="msg-type-badge ${m.type}" style="margin-top:5px;display:inline-block;">${m.type}</span>
+        </div>
+        <span class="msg-ref" style="font-size:12px;">${m.id}</span>
+      </div>
+      <div class="msg-full-body">${m.body}</div>
+      <div class="msg-full-meta">
+        <span class="msg-meta-item">📅 ${m.date}</span>
+        <span class="msg-meta-item">از: مدیریت</span>
+        ${m.replyRef ? `<span class="msg-meta-item msg-ref-link" onclick="showRefMsg('${m.replyRef}')">↩️ ارجاع: ${m.replyRef}</span>` : ""}
+      </div>
+      <button class="reply-btn" onclick="startReply('${m.id}')">↩️ پاسخ به این پیام</button>
+    </div>
+  `,
+          )
+          .join("");
+        // mark all as read
+        const inbox = getInbox(currentUser.block, currentUser.unit);
+        inbox.forEach((m) => (m.read = true));
+        saveInbox(currentUser.block, currentUser.unit, inbox);
+        updateInboxBadge();
+      }
+
+      function startReply(msgId) {
+        const inbox = getInbox(currentUser.block, currentUser.unit);
+        const msg = inbox.find((m) => m.id === msgId);
+        if (!msg) return;
+        currentReplyRef = msgId;
+        document.getElementById("reply-ref-inp").value = msgId;
+        document.getElementById("reply-ref-group").style.display = "block";
+        document.getElementById("msg-title-inp").value = `پاسخ: ${msg.title}`;
+        goTab("tab-messages");
+        window.scrollTo(0, 0);
+        showToast(`ارجاع به ${msgId} تنظیم شد`, "");
+      }
+
+      function openMsgDetail(id, isAdmin) {
+        let msg = null;
+        if (isAdmin) {
+          const adminInbox = lsGet("admin-inbox") || [];
+          msg = adminInbox.find((m) => m.id === id);
+        } else {
+          const inbox = getInbox(currentUser.block, currentUser.unit);
+          msg = inbox.find((m) => m.id === id);
+          if (msg) {
+            msg.read = true;
+            const all = getInbox(currentUser.block, currentUser.unit);
+            const idx = all.findIndex((m) => m.id === id);
+            if (idx !== -1) {
+              all[idx].read = true;
+              saveInbox(currentUser.block, currentUser.unit, all);
+            }
+            updateInboxBadge();
+            renderHomeInbox();
+          }
+        }
+        if (!msg) return;
+        viewingMsgId = id;
+        document.getElementById("mdm-title").textContent = msg.title;
+        document.getElementById("mdm-type-badge").innerHTML =
+          `<span class="msg-type-badge ${msg.type}">${msg.type}</span>`;
+        document.getElementById("mdm-body").textContent = msg.body;
+        document.getElementById("mdm-meta").innerHTML = `
+    <span class="msg-meta-item">📅 ${msg.date}</span>
+    <span class="msg-meta-item">${isAdmin ? "👤 " + msg.from : "از: مدیریت"}</span>
+    <span class="msg-meta-item">🔖 ${msg.id}</span>
+  `;
+        // ref section
+        const refSection = document.getElementById("mdm-ref-section");
+        if (msg.replyRef) {
+          refSection.style.display = "block";
+          const refMsg = findMsgById(msg.replyRef);
+          document.getElementById("mdm-ref-content").innerHTML = refMsg
+            ? `<strong>${refMsg.title}</strong><br>${refMsg.body}<br><small style="color:var(--text-muted)">${refMsg.id} · ${refMsg.date}</small>`
+            : `شماره مرجع: ${msg.replyRef}`;
+        } else {
+          refSection.style.display = "none";
+        }
+        // reply button — admin can reply from modal
+        const replyBtn = document.getElementById("mdm-reply-btn");
+        if (isAdmin) {
+          replyBtn.textContent = "↩️ پاسخ به این ساکن";
+          replyBtn.onclick = () => {
+            adminReplyFromModal(msg);
+            closeMsgModal();
+          };
+        } else {
+          replyBtn.textContent = "↩️ پاسخ";
+          replyBtn.onclick = () => {
+            startReply(id);
+            closeMsgModal();
+          };
+        }
+        document.getElementById("msg-detail-modal").classList.add("show");
+      }
+
+      function closeMsgModal() {
+        document.getElementById("msg-detail-modal").classList.remove("show");
+      }
+
+      function findMsgById(id) {
+        // search all inboxes and admin inbox
+        const adminInbox = lsGet("admin-inbox") || [];
+        let msg = adminInbox.find((m) => m.id === id);
+        if (msg) return msg;
+        for (const u of USERS) {
+          const inbox = getInbox(u.block, u.unit);
+          msg = inbox.find((m) => m.id === id);
+          if (msg) return msg;
+        }
+        return null;
+      }
+
+      function showRefMsg(refId) {
+        const msg = findMsgById(refId);
+        if (!msg) {
+          showToast("پیام اصلی یافت نشد", "error");
+          return;
+        }
+        closeMsgModal();
+        setTimeout(() => {
+          if (isAdmin) openMsgDetail(refId, true);
+          else openMsgDetail(refId, false);
+        }, 200);
+      }
+
+      function updateInboxBadge() {
+        if (!currentUser || isAdmin) return;
+        const msgs = getInbox(currentUser.block, currentUser.unit);
+        const unread = msgs.filter((m) => !m.read).length;
+        const badge = document.getElementById("tab-msg-badge");
+        if (unread > 0) {
+          badge.style.display = "block";
+          badge.textContent = unread;
+        } else {
+          badge.style.display = "none";
+        }
+      }
+
+      // ═══════════════════════════════════════════
+      // ADMIN MESSAGING
+      // ═══════════════════════════════════════════
+      let adminSelectedUnits = [];
+      let adminReplyRef = null;
+
+      function renderAdminUnitsSelect() {
+        const container = document.getElementById("admin-units-select");
+        container.innerHTML =
+          `<div class="unit-chip all ${adminSelectedUnits.includes("all") ? "selected" : ""}" onclick="toggleAdminUnit('all')">📢 همه ساکنین</div>` +
+          USERS.map(
+            (u) =>
+              `<div class="unit-chip ${adminSelectedUnits.includes(u.unit + ":" + u.block) ? "selected" : ""}" onclick="toggleAdminUnit('${u.unit}:${u.block}')">بلوک ${u.block}·واحد ${u.unit}</div>`,
+          ).join("");
+      }
+
+      function toggleAdminUnit(key) {
+        if (key === "all") {
+          adminSelectedUnits = adminSelectedUnits.includes("all")
+            ? []
+            : ["all"];
+        } else {
+          adminSelectedUnits = adminSelectedUnits.filter((k) => k !== "all");
+          const idx = adminSelectedUnits.indexOf(key);
+          if (idx >= 0) adminSelectedUnits.splice(idx, 1);
+          else adminSelectedUnits.push(key);
+        }
+        renderAdminUnitsSelect();
+      }
+
+      function adminSendMessage() {
+        const title = document.getElementById("adm-msg-title").value.trim();
+        const type = document.getElementById("adm-msg-type").value;
+        const body = document.getElementById("adm-msg-body").value.trim();
+        if (!adminSelectedUnits.length) {
+          showToast("گیرندگان را انتخاب کنید", "error");
+          return;
+        }
+        if (!title || !body) {
+          showToast("عنوان و متن الزامی است", "error");
+          return;
+        }
+
+        const targets = adminSelectedUnits.includes("all")
+          ? USERS
+          : USERS.filter((u) =>
+              adminSelectedUnits.includes(u.unit + ":" + u.block),
+            );
+        const msgId = nextMsgId();
+        const dateStr = new Date().toLocaleString("fa-IR");
+
+        targets.forEach((u) => {
+          const inbox = getInbox(u.block, u.unit);
+          inbox.unshift({
+            id: msgId + "-" + u.unit,
+            origId: msgId,
+            title,
+            type,
+            body,
+            date: dateStr,
+            replyRef: adminReplyRef || null,
+            read: false,
+          });
+          saveInbox(u.block, u.unit, inbox);
+        });
+
+        // ذخیره پیام ارسالی مدیر
+        const adminSent = lsGet("admin-sent") || [];
+        adminSent.unshift({
+          id: msgId,
+          title,
+          type,
+          body,
+          date: dateStr,
+          replyRef: adminReplyRef || null,
+          toUnits: targets.map((u) => `${u.block}:${u.unit}`),
+          toNames: targets.map((u) => u.name),
+        });
+        lsSet("admin-sent", adminSent);
+
+        document.getElementById("adm-msg-title").value = "";
+        document.getElementById("adm-msg-body").value = "";
+        adminReplyRef = null;
+        document.getElementById("adm-reply-ref-group").style.display = "none";
+        adminSelectedUnits = [];
+        renderAdminUnitsSelect();
+        showToast(
+          `✓ پیام ${msgId} به ${targets.length} ساکن ارسال شد`,
+          "success",
+        );
+      }
+
+      function adminReplyFromModal(originalMsg) {
+        document.getElementById("adm-msg-title").value =
+          `پاسخ: ${originalMsg.title}`;
+        adminReplyRef = originalMsg.id;
+        document.getElementById("adm-reply-ref").value = originalMsg.id;
+        document.getElementById("adm-reply-ref-group").style.display = "block";
+        // pre-select sender
+        adminSelectedUnits = [
+          `${originalMsg.fromUnit}:${originalMsg.fromBlock}`,
+        ];
+        renderAdminUnitsSelect();
+        goTab("tab-admin");
+        showToast(`ارجاع به ${originalMsg.id} تنظیم شد`, "");
+      }
+
+      function clearAdminReplyRef() {
+        adminReplyRef = null;
+        document.getElementById("adm-reply-ref-group").style.display = "none";
+      }
+
+      function renderAdminInbox() {
+        const adminInbox = lsGet("admin-inbox") || [];
+        const adminSent = lsGet("admin-sent") || [];
+        const list = document.getElementById("admin-inbox-list");
+        const filterSel = document.getElementById("adm-inbox-filter");
+        const filterVal = filterSel ? filterSel.value : "all";
+
+        // Populate filter dropdown
+        if (filterSel) {
+          const existingOpts = Array.from(filterSel.options).map(
+            (o) => o.value,
+          );
+          USERS.forEach((u) => {
+            const key = `${u.block}:${u.unit}`;
+            if (!existingOpts.includes(key)) {
+              const opt = document.createElement("option");
+              opt.value = key;
+              opt.textContent = `بلوک ${u.block} · واحد ${u.unit} — ${u.name}`;
+              filterSel.appendChild(opt);
+            }
+          });
+        }
+
+        // Filter received
+        const filteredReceived =
+          filterVal === "all"
+            ? adminInbox
+            : adminInbox.filter(
+                (m) => `${m.fromBlock}:${m.fromUnit}` === filterVal,
+              );
+
+        // Filter sent (admin messages sent to a specific unit)
+        const filteredSent =
+          filterVal === "all"
+            ? adminSent
+            : adminSent.filter(
+                (m) => m.toUnits && m.toUnits.includes(filterVal),
+              );
+
+        const totalReceived = adminInbox.length;
+        const totalSent = adminSent.length;
+
+        document.getElementById("adm-inbox-total").textContent =
+          `${totalReceived} دریافتی · ${totalSent} ارسالی${filterVal !== "all" ? " · فیلتر شده" : ""}`;
+
+        if (!filteredReceived.length && !filteredSent.length) {
+          list.innerHTML = `<div class="empty-state"><div class="es-icon">📭</div><p>پیامی برای این واحد موجود نیست</p></div>`;
+          return;
+        }
+
+        let html = "";
+
+        // ── بخش پیام‌های دریافتی ──
+        if (filteredReceived.length > 0) {
+          // Group by unit
+          const groups = {};
+          filteredReceived.forEach((m) => {
+            const key = `${m.fromBlock}:${m.fromUnit}`;
+            if (!groups[key])
+              groups[key] = {
+                msgs: [],
+                name: m.from,
+                block: m.fromBlock,
+                unit: m.fromUnit,
+              };
+            groups[key].msgs.push(m);
+          });
+
+          html += `<div style="font-size:12px;font-weight:700;color:#34d399;margin:10px 0 8px;padding:6px 10px;background:#34d39911;border-radius:8px;border-right:3px solid #34d399;display:flex;align-items:center;gap:7px;"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="11" y="3" width="7" height="14" rx="1.5" stroke="#34d399" stroke-width="1.4" fill="none"/><line x1="14.5" y1="6" x2="14.5" y2="14" stroke="#34d399" stroke-width="1.2" stroke-linecap="round"/><line x1="1" y1="10" x2="10" y2="10" stroke="#34d399" stroke-width="1.6" stroke-linecap="round"/><polyline points="6.5,6.5 10.5,10 6.5,13.5" stroke="#34d399" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg> پیام‌های دریافتی از ساکنین — ${filteredReceived.length} پیام</div>`;
+
+          html += Object.entries(groups)
+            .map(([key, g]) => {
+              const unreadCount = g.msgs.filter((m) => !m.read).length;
+              const msgs = g.msgs
+                .map(
+                  (m) => `
+      <div class="adm-msg-row ${m.read ? "" : "unread"}" id="adm-row-${m.id}">
+        <div style="display:flex;flex-direction:column;gap:6px;align-items:center;min-width:80px;">
+          <div class="adm-msg-ref-pill" style="display:flex;align-items:center;gap:4px;">
+            <svg width="13" height="13" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
+              <rect x="11" y="3" width="7" height="14" rx="1.5" stroke="#34d399" stroke-width="1.5" fill="none"/>
+              <line x1="14.5" y1="6" x2="14.5" y2="14" stroke="#34d399" stroke-width="1.2" stroke-linecap="round"/>
+              <line x1="1" y1="10" x2="10" y2="10" stroke="#34d399" stroke-width="1.7" stroke-linecap="round"/>
+              <polyline points="6.5,6.5 10.5,10 6.5,13.5" stroke="#34d399" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            </svg>
+            ${m.id}
+          </div>
+          <span class="msg-type-badge ${m.type}">${m.type}</span>
+        </div>
+        <div class="adm-msg-main">
+          <div class="adm-msg-row-title">${m.read ? "" : '<span style="color:var(--accent);font-size:10px;">● جدید &nbsp;</span>'}${m.title}</div>
+          <div class="adm-msg-row-body">${m.body}</div>
+          <div class="adm-msg-row-meta">
+            <span class="adm-msg-date">📅 ${m.date}</span>
+            ${m.replyRef ? `<span class="adm-msg-replyref" onclick="showRefMsg('${m.replyRef}')">↩️ ارجاع: ${m.replyRef}</span>` : ""}
+          </div>
+        </div>
+        <div class="adm-msg-actions">
+          <button class="btn-reply-now" onclick="adminQuickReply('${m.id}')">↩️ پاسخ</button>
+          <button onclick="markAdminMsgRead('${m.id}')" style="background:none;border:none;color:var(--text-muted);font-size:10px;cursor:pointer;font-family:Vazirmatn,sans-serif;">✓ خوانده شد</button>
+        </div>
+      </div>
+    `,
+                )
+                .join("");
+
+              return `
+      <div class="adm-unit-group">
+        <div class="adm-unit-header" onclick="toggleUnitGroup('grp-${key}')">
+          <span class="adm-unit-label">🏠 ${g.name}</span>
+          ${unreadCount > 0 ? `<span class="adm-unit-count unread-count">${unreadCount} جدید</span>` : ""}
+          <span class="adm-unit-count">${g.msgs.length} پیام</span>
+          <span style="color:var(--text-muted);font-size:12px;">▼</span>
+        </div>
+        <div id="grp-${key}" class="adm-unit-msgs">${msgs}</div>
+      </div>
+    `;
+            })
+            .join("");
+        }
+
+        // ── بخش پیام‌های ارسالی مدیر ──
+        if (filteredSent.length > 0) {
+          html += `<div style="font-size:12px;font-weight:700;color:#f87171;margin:16px 0 8px;padding:6px 10px;background:#f8717111;border-radius:8px;border-right:3px solid #f87171;display:flex;align-items:center;gap:7px;"><svg width="18" height="18" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="3" width="7" height="14" rx="1.5" stroke="#f87171" stroke-width="1.4" fill="none"/><line x1="5.5" y1="6" x2="5.5" y2="14" stroke="#f87171" stroke-width="1.2" stroke-linecap="round"/><line x1="9" y1="10" x2="19" y2="10" stroke="#f87171" stroke-width="1.6" stroke-linecap="round"/><polyline points="13.5,6.5 9.5,10 13.5,13.5" stroke="#f87171" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg> پیام‌های ارسالی مدیریت — ${filteredSent.length} پیام</div>`;
+
+          html += filteredSent
+            .map((m) => {
+              const toLabel =
+                m.toNames && m.toNames.length
+                  ? m.toNames.length > 2
+                    ? m.toNames.slice(0, 2).join("، ") +
+                      ` و ${m.toNames.length - 2} نفر دیگر`
+                    : m.toNames.join("، ")
+                  : "همه ساکنین";
+              return `
+      <div class="adm-msg-row" style="border-right:3px solid var(--gold)33;opacity:.92;">
+        <div style="display:flex;flex-direction:column;gap:6px;align-items:center;min-width:80px;">
+          <div class="adm-msg-ref-pill" style="border-color:var(--gold)44;color:var(--gold);display:flex;align-items:center;gap:4px;">
+            <svg width="13" height="13" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;">
+              <rect x="2" y="3" width="7" height="14" rx="1.5" stroke="#f87171" stroke-width="1.5" fill="none"/>
+              <line x1="5.5" y1="6" x2="5.5" y2="14" stroke="#f87171" stroke-width="1.2" stroke-linecap="round"/>
+              <line x1="9" y1="10" x2="19" y2="10" stroke="#f87171" stroke-width="1.7" stroke-linecap="round"/>
+              <polyline points="13.5,6.5 9.5,10 13.5,13.5" stroke="#f87171" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            </svg>
+            ${m.id}
+          </div>
+          <span class="msg-type-badge ${m.type}">${m.type}</span>
+        </div>
+        <div class="adm-msg-main">
+          <div class="adm-msg-row-title">${m.title}</div>
+          <div class="adm-msg-row-body">${m.body}</div>
+          <div class="adm-msg-row-meta">
+            <span class="adm-msg-date">📅 ${m.date}</span>
+            <span style="font-size:10px;color:var(--gold);opacity:.8;">→ ${toLabel}</span>
+            ${m.replyRef ? `<span class="adm-msg-replyref" onclick="showRefMsg('${m.replyRef}')">↩️ ارجاع: ${m.replyRef}</span>` : ""}
+          </div>
+        </div>
+        <div class="adm-msg-actions">
+          <span style="font-size:10px;color:var(--gold);background:#f0c06015;border:1px solid #f0c06033;padding:3px 8px;border-radius:6px;">📤 ارسال شده</span>
+        </div>
+      </div>
+    `;
+            })
+            .join("");
+        }
+
+        list.innerHTML = html;
+      }
+
+      function toggleUnitGroup(id) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.style.display = el.style.display === "none" ? "" : "none";
+      }
+
+      function markAdminMsgRead(id) {
+        const adminInbox = lsGet("admin-inbox") || [];
+        const msg = adminInbox.find((m) => m.id === id);
+        if (msg) {
+          msg.read = true;
+          lsSet("admin-inbox", adminInbox);
+          renderAdminInbox();
+        }
+      }
+
+      function adminQuickReply(msgId) {
+        const adminInbox = lsGet("admin-inbox") || [];
+        const msg = adminInbox.find((m) => m.id === msgId);
+        if (!msg) return;
+        // mark as read
+        msg.read = true;
+        lsSet("admin-inbox", adminInbox);
+        adminReplyFromModal(msg);
+        // scroll to compose
+        setTimeout(() => {
+          const el = document.querySelector(".admin-card");
+          if (el) el.scrollIntoView({ behavior: "smooth" });
+        }, 100);
+      }
+
+      // ═══════════════════════════════════════════
+      // MODAL
+      // ═══════════════════════════════════════════
+      function showModal(title, body, onConfirm) {
+        document.getElementById("modal-title").textContent = title;
+        document.getElementById("modal-body").textContent = body;
+        document.getElementById("modal-confirm-btn").onclick = onConfirm;
+        document.getElementById("confirm-modal").classList.add("show");
+      }
+      function closeModal() {
+        document.getElementById("confirm-modal").classList.remove("show");
+      }
+
+      // ═══════════════════════════════════════════
+      // TOAST
+      // ═══════════════════════════════════════════
+      let toastTimer;
+      function showToast(msg, type = "") {
+        const t = document.getElementById("toast");
+        t.textContent = msg;
+        t.className = "toast show " + type;
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => t.classList.remove("show"), 3200);
+      }
+    </script>
+  </body>
+</html>
